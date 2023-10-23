@@ -10,7 +10,7 @@
 <ng-template #mrsnvForm>
   <ng-container *ngIf="selectedNetwork">
     <div *ngIf="!selectedNetwork.isValid && !selectedNetwork.validAspects" class="alert alert-warning mt-2 mb-0 mx-3" role="alert">
-      This network does not contain a visualization settings. The settings are stored within the network as <code>metaRelSubNetVis</code> aspect. Click the button to create it!
+      This network does not contain a visualization settings. The settings are stored within the network as <code>VisAVis</code> aspect. Click the button to create it!
     </div>
   </ng-container>
 
@@ -26,7 +26,7 @@
         [openDelay]="1000"
         container="body"
         placement="bottom"
-        ngbTooltip="Edit the metaRelSubNetVis aspect to change the visualization result"
+        ngbTooltip="Edit the VisAVis aspect to change the visualization result"
         (click)="editMrsnv.emit()"
         [disabled]="setupInProgress || isCheckingCompatibility === true"
       >

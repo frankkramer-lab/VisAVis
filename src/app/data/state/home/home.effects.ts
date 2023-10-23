@@ -28,9 +28,9 @@ export class HomeEffects {
       concatMap(() => {
         return forkJoin({
           sample_1: this.apiService.loadNetworkSummary('d9572dc0-6115-11ed-ae36-0ac135e8bacf'), // new data structure
-          sample_2: this.apiService.loadNetworkSummary('a420aaee-4be9-11ec-b3be-0ac135e8bacf'),
-          sample_3: this.apiService.loadNetworkSummary('2f842890-078c-11ee-aa50-005056ae23aa'), // dummy network
-          sample_4: this.apiService.loadNetworkSummary('4ce6b2b8-47ee-11ee-aa50-005056ae23aa'), // without aspect
+          // sample_2: this.apiService.loadNetworkSummary('a420aaee-4be9-11ec-b3be-0ac135e8bacf'),
+          // sample_3: this.apiService.loadNetworkSummary('2f842890-078c-11ee-aa50-005056ae23aa'), // dummy network
+          // sample_4: this.apiService.loadNetworkSummary('4ce6b2b8-47ee-11ee-aa50-005056ae23aa'), // without aspect
         }).pipe(
           map((payload) => {
             return loadSampleSummariesSuccess({
@@ -39,18 +39,18 @@ export class HomeEffects {
                   ...payload.sample_1,
                   linkNdex: `https://www.ndexbio.org/viewer/networks/${payload.sample_1.externalId}`,
                 },
-                {
-                  ...payload.sample_2,
-                  linkNdex: `https://www.ndexbio.org/viewer/networks/${payload.sample_2.externalId}`,
-                },
-                {
-                  ...payload.sample_3,
-                  linkNdex: `https://www.ndexbio.org/viewer/networks/${payload.sample_3.externalId}`,
-                },
-                {
-                  ...payload.sample_4,
-                  linkNdex: `https://www.ndexbio.org/viewer/networks/${payload.sample_4.externalId}`,
-                },
+                // {
+                //   ...payload.sample_2,
+                //   linkNdex: `https://www.ndexbio.org/viewer/networks/${payload.sample_2.externalId}`,
+                // },
+                // {
+                //   ...payload.sample_3,
+                //   linkNdex: `https://www.ndexbio.org/viewer/networks/${payload.sample_3.externalId}`,
+                // },
+                // {
+                //   ...payload.sample_4,
+                //   linkNdex: `https://www.ndexbio.org/viewer/networks/${payload.sample_4.externalId}`,
+                // },
               ],
             });
           }),
