@@ -1,0 +1,97 @@
+<!-- filter form -->
+<div class="input-group">
+  <input
+    #filterTerm
+    (input)="filterTermChanged.emit(filterTerm.value)"
+    aria-label="Filter nodes"
+    class="form-control"
+    id="filterTerm"
+    placeholder="Filter..."
+    type="text"
+  />
+  <button
+    (click)="filterTerm.value = ''; filterTermChanged.emit('')"
+    *ngIf="filterTerm.value.length > 0"
+    class="btn btn-dark"
+    id="clearSearch"
+    type="button"
+  >
+    <fa-icon icon="times"></fa-icon>
+  </button>
+  <button *ngIf="nodes" class="btn btn-dark" disabled="true" type="button">
+    {{ nodes.length }}
+  </button>
+</div>
+
+<hr />
+
+<ng-container *ngIf="occurrences && numberOfColumns && markedNodes && nodes">
+  <!-- table head -->
+  <table class="table table-borderless text-light">
+    <thead>
+      <tr class="border-bottom">
+        <!-- node -->
+        <th class="w-{{ numberOfColumns < 4 ? '50' : '25'}}">Nodes</th>
+        <!-- group A -->
+        <th
+          (click)="sortingChanged.emit(0)"
+          *ngIf="filterProperty && patientAValue"
+          class="cursor w-25"
+        >
+          {{ patientAValue }}&nbsp;({{ occurrences[filterProperty.property][patientAValue] }})
+        </th>
+        <!-- group B -->
+        <th
+          (click)="sortingChanged.emit(1)"
+          *ngIf="filterProperty && patientBValue"
+          class="cursor w-25"
+        >
+          {{ patientBValue }}&nbsp;({{ occurrences[filterProperty.property][patientBValue] }})
+        </th>
+        <!-- total -->
+        <th
+          (click)="sortingChanged.emit(2)"
+          [ngClass]="numberOfColumns === 2 ? 'w-50' : 'w-25'"
+          class="cursor"
+        >
+            All&nbsp;({{ occurrences.all.all }})
+        </th>
+      </tr>
+    </thead>
+  </table>
+
+  <!-- table body scrollable -->
+  <div class="scroll-style" id="table-nodes">
+    <table class="table table-borderless text-light">
+      <tbody>
+        <ng-container *ngFor="let node of nodes">
+          <tr
+            (click)="nodeClicked.emit(node)"
+            [ngClass]="markedNodes.includes(node) ? 'bg-info' : ''"
+            class="cursor"
+          >
+            <td class="w-{{ numberOfColumns < 4 ? '50' : '25' }}">
+              {{ node.data.name }}
+            </td>
+            <td *ngIf="filterProperty && patientAValue" class="w-25">
+              {{ node.occ[filterProperty.property][patientAValue] }}
+            </td>
+            <td *ngIf="filterProperty && patientBValue" class="w-25">
+              {{ node.occ[filterProperty.property][patientBValue] }}
+            </td>
+            <td [ngClass]="numberOfColumns === 2 ? 'w-50' : 'w-25'">
+              {{ node.occ.all.all }}
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</ng-container>
+
+<!-- Unselect -->
+<div *ngIf="markedNodes && markedNodes.length > 0" class="d-grid mt-2">
+  <button (click)="unmarkAllNodes.emit()" class="btn btn-secondary">
+    <fa-icon icon="redo"></fa-icon>&nbsp;Unselect all
+  </button>
+</div>

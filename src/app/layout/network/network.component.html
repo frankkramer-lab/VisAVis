@@ -1,0 +1,27 @@
+<div class="container-fluid">
+  <div class="row">
+    <div [ngClass]="(sidebarVisible$ | async) === 0 ? 'col-4' : 'col-auto'" class="p-0">
+      <app-sidebar
+        [isUserOnline]="userOnline$ | async"
+        [filterableProperties]="filterableProperties$ | async"
+        [filterByProperty]="filterByProperty$ | async"
+        [labelGroups]="labelGroups$ | async"
+        [labelInfo]="labelsInfos$ | async"
+        [labelSubnetworks]="labelSubnetwork$ | async"
+        [sidebarBackButtonVisible]="sidebarBackButtonVisible$ | async"
+        [sidebarDownloadVisible]="sidebarDownloadVisible$ | async"
+        [sidebarGeneratorVisible]="sidebarGeneratorVisible$ | async"
+        [sidebarImportVisible]="sidebarImportVisible$ | async"
+        [sidebarImpressumVisible]="sidebarImpressumVisible$ | async"
+        [sidebarLayoutVisible]="sidebarLayoutVisible$ | async"
+        [sidebarNodesVisible]="sidebarNodesVisible$ | async"
+        [sidebarPatientsVisible]="sidebarPatientsVisible$ | async"
+        [sidebarThresholdVisible]="sidebarThresholdVisible$ | async"
+        [sidebarVisible]="sidebarVisible$ | async"
+      ></app-sidebar>
+    </div>
+    <div [ngClass]="(sidebarVisible$ | async) === 0 ? 'col-8' : 'col'" class="light-mode">
+      <app-graph [headline]="headline$ | async"></app-graph>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="container-fluid p-5 mb-5">
+
+  <app-home-headline></app-home-headline>
+
+  <div class="alert alert-success mb-3" role="alert">
+    <h5 class="display-5">Upload successful!</h5>
+    <p>The network you submitted was successfully uploaded to your NDEx account.</p>
+    <p *ngIf="url">You can access the network <b><a href="{{url}}" target="_blank">here</a></b>.</p>
+  </div>
+
+  <div class="d-grid">
+    <button class="btn btn-outline-primary" type="button" (click)="navigateHome()">Return home
+    </button>
+  </div>
+
+</div>
+
+<app-home-footer></app-home-footer>

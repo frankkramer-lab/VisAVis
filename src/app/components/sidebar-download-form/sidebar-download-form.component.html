@@ -1,0 +1,61 @@
+<!-- select: data type -->
+<div class="d-grid mb-3">
+  <div
+    [attr.aria-label]="'Select a datatype for the image download'"
+    class="btn-group"
+    role="group"
+  >
+    <ng-container *ngFor="let ext of availableDatatypes; let index = index">
+      <input
+        (click)="extensionChanged.emit(ext)"
+        [checked]="extension === ext"
+        autocomplete="off"
+        class="btn-check"
+        id="ext{{ index }}"
+        name="imageExtensions"
+        type="radio"
+      />
+      <label class="btn btn-outline-info" for="ext{{ index }}">{{ ext }}</label>
+    </ng-container>
+  </div>
+</div>
+
+<!-- select: scale -->
+<div *ngIf="extension !== 'SVG'" class="input-group mb-3">
+  <span class="input-group-text" id="scaleLabel">Scale image by</span>
+  <input
+    (ngModelChange)="scaleChanged.emit($event)"
+    [ngModel]="scale"
+    aria-describedby="scaleLabel"
+    aria-label="Scale image by"
+    class="form-control"
+    id="scale"
+    type="number"
+  />
+</div>
+
+<!-- error handling: scale -->
+<p *ngIf="!isFormValid" class="alert alert-danger">
+  Scale is required and has to be greater than 0 and cannot be greater than 10.
+</p>
+
+<!-- select: background transparent -->
+<div *ngIf="extension === 'PNG'" class="mb-3">
+  <div class="form-check form-switch">
+    <input
+      (ngModelChange)="transparentBackgroundChanged.emit()"
+      [ngModel]="transparentBackground"
+      class="form-check-input"
+      id="transparent"
+      type="checkbox"
+    />
+    <label class="form-check-label" for="transparent">Transparent background</label>
+  </div>
+</div>
+
+<!-- SUBMIT -->
+<div *ngIf="buttonVisible" class="d-grid">
+  <button (click)="triggerImageDownload.emit()" [disabled]="!isFormValid" class="btn btn-success">
+    <fa-icon icon="download"></fa-icon>&nbsp; Download image
+  </button>
+</div>

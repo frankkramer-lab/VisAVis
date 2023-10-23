@@ -1,0 +1,793 @@
+<ng-container *ngIf="!mrsnv || mrsnv.value.loadingSelectedNetwork === true">
+  <div class="text-center">
+    <h1 class="display-5 m-5">Loading network details</h1>
+
+    <div
+      [ngStyle]="{ 'width.rem': 10, 'height.rem': 10 }"
+      class="mb-5 spinner-border"
+      role="status"
+    >
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="mrsnv && mrsnv.value.loadingSelectedNetwork === false">
+  <form [ngrxFormState]="mrsnv">
+    <nav #nav="ngbNav" class="nav-tabs" ngbNav>
+      <ng-container ngbNavItem>
+        <a ngbNavLink class="ms-3">Network settings</a>
+        <ng-template ngbNavContent>
+          <div class="container ps-4 pe-3 py-2">
+            <h5>General settings</h5>
+
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="row m-0 pseudo-form-group">
+                  <div class="col-auto label">Separator</div>
+                  <div class="col value">{{mrsnv.value.separator}}</div>
+                </div>
+              </div>
+
+              <div class="col-6">
+                <app-color
+                  [label]=" 'Highlight color' "
+                  [color]="mrsnv.value.highlight"
+                  [editable]="false"
+                  ></app-color>
+<!--                <div class="row m-0 pseudo-form-group">-->
+<!--                  <div class="col-auto label">Highlight color</div>-->
+<!--                  <div class="col value" style="{{highlightColorStyle()}}">{{mrsnv.value.highlight}}</div>-->
+<!--                </div>-->
+              </div>
+            </div>
+
+            <h5>Network attributes</h5>
+            <p>
+              Attributes describing the network are stored in the <code>networkAttributes</code> aspect.
+              This includes recommended information as <code>author</code> and <code>description</code> of the
+              network but also supporting information like <code>organism</code> or <code>networkType</code>.
+              This application requires the specification of additional attributes of the contained data:
+              Which <b>subnetworks</b> are contained in the network, which <b>group</b> do they belong to,
+              and which <b>additional information</b> should be displayed along?
+            </p>
+
+            <table *ngIf="mrsnv && mrsnv.value.networkAttributes" class="table">
+              <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th>
+                  <app-tip
+                    tipText="Property name in the networkAttributes within the CX data structure"
+                    padding="px-0"
+                  ></app-tip>
+                  &nbsp;Name
+                </th>
+                <th>
+                  <app-tip tipText="Name to display within the application" padding="px-0"></app-tip>
+                  &nbsp;Label
+                </th>
+                <th *ngIf="mrsnv.value.networkAttributes.info.length !== 0">
+                  <app-tip tipText="Can the subnetworks be filtered by this attribute?" padding="px-0"></app-tip>
+                  &nbsp;Filterable
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <!-- SUBNETWORKS -->
+              <tr *ngIf="mrsnv.value.networkAttributes.subnetworks">
+                <td>
+                  <app-tip
+                    tipText="Key that identifies the subnetworks in CX' proprietary networkAttributes aspect"
+                    padding="px-0"
+                  ></app-tip>
+                  &nbsp;Subnetworks
+                </td>
+                <td>
+                  <!-- [DISABLED] input -->
+                  <input
+                    *ngIf="mrsnv.isDisabled"
+                    type="text"
+                    class="form-control"
+                    [ngrxFormControlState]="
+                        mrsnv.controls.networkAttributes.controls.subnetworks.controls.property
+                      "
+                  />
+                  <!-- [ENABLED] Dropdown: Viable subnetwork properties in the network, identifiers within the network representing subnetworks -->
+                  <select
+                    *ngIf="mrsnv.isEnabled && candidatesSubnetworks"
+                    id="selectSubnet"
+                    class="form-select"
+                    aria-label="Select subnetwork property"
+                    [ngClass]="
+                        mrsnv.controls.networkAttributes.isInvalid ? 'ngrx-forms-invalid' : ''
+                      "
+                    [ngrxFormControlState]="
+                        mrsnv.controls.networkAttributes.controls.subnetworks.controls.property
+                      "
+                  >
+                    <option value="">Reset</option>
+                    <option
+                      *ngFor="let optSubnetwork of candidatesSubnetworks"
+                      [value]="optSubnetwork.name"
+                    >
+                      {{ optSubnetwork.name }} ({{ optSubnetwork.numberOfSubnetworks }})
+                    </option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    id="subnetLabel"
+                    type="text"
+                    class="form-control"
+                    [ngrxFormControlState]="
+                        mrsnv.controls.networkAttributes.controls.subnetworks.controls.label
+                      "
+                  />
+                </td>
+                <td></td>
+              </tr>
+              <!-- GROUPS -->
+              <tr *ngIf="mrsnv.value.networkAttributes.groups">
+                <td>
+                  <app-tip
+                    tipText="Key that identifies the two groups all subnetworks are distinctly assigned to"
+                    padding="px-0"
+                  ></app-tip>
+                  &nbsp;Groups
+                </td>
+                <td>
+                  <!-- [DISABLED] input -->
+                  <input
+                    *ngIf="mrsnv.isDisabled"
+                    class="form-control"
+                    [ngrxFormControlState]="
+                        mrsnv.controls.networkAttributes.controls.groups.controls.property
+                      "
+                  />
+                  <!-- [ENABLED] Dropdown: Viable group properties in the network, it has only two values (GroupA, GroupB) -->
+                  <select
+                    *ngIf="mrsnv.isEnabled && candidatesGroups"
+                    id="selectGroup"
+                    class="form-select"
+                    aria-label="Select group property"
+                    [ngClass]="
+                        mrsnv.controls.networkAttributes.isInvalid ? 'ngrx-forms-invalid' : ''
+                      "
+                    [ngrxFormControlState]="
+                        mrsnv.controls.networkAttributes.controls.groups.controls.property
+                      "
+                  >
+                    <option value="">Reset</option>
+                    <option *ngFor="let optGroup of candidatesGroups" [value]="optGroup.name">
+                      {{ optGroup.name }} ({{ optGroup.numberOfSubnetworks }})
+                    </option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    id="groupLabel"
+                    type="text"
+                    class="form-control"
+                    [ngrxFormControlState]="
+                        mrsnv.controls.networkAttributes.controls.groups.controls.label
+                      "
+                  />
+                </td>
+                <td></td>
+              </tr>
+
+              <!-- INFO -->
+              <ng-container *ngIf="mrsnv.value.networkAttributes.info || mrsnv.isEnabled">
+                <tr
+                  *ngFor="
+                      let info of mrsnv.value.networkAttributes.info;
+                      let first = first;
+                      let index = index;
+                      trackBy: UtilService.trackByIndex
+                    "
+                >
+                  <td
+                    *ngIf="first"
+                    [attr.rowspan]="
+                        mrsnv.isDisabled
+                          ? mrsnv.value.networkAttributes.info.length
+                          : mrsnv.value.networkAttributes.info.length + 1
+                      "
+                  >
+                    <app-tip *ngIf="first" tipText="Further information" padding="px-0"></app-tip>
+                    &nbsp;Info
+                  </td>
+                  <td>
+                    <!-- Form: Manage info items -->
+                    <div class="col-auto" *ngIf="mrsnv.isEnabled">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-danger"
+                        (click)="removeInfoEmitter.emit(info.property)"
+                      >
+                        <fa-icon icon="trash"></fa-icon>
+                      </button>
+                    </div>
+                    <div class="col">
+                      <input
+                        type="text"
+                        [readOnly]="true"
+                        class="form-control"
+                        [ngClass]="mrsnv.controls.networkAttributes.isInvalid ? 'ngrx-forms-invalid' : ''"
+                        [ngrxFormControlState]="
+        mrsnv.controls.networkAttributes.controls.info.controls[index].controls
+          .property
+      "
+                      />
+                    </div>
+
+<!--                    <app-mrsnv-form-info-->
+<!--                      [mrsnv]="mrsnv"-->
+<!--                      [candidateInfo]="info"-->
+<!--                      [candidateInfoIndex]="index"-->
+<!--                      (removeInfoEmitter)="removeInfoEmitter.emit($event)"-->
+<!--                    ></app-mrsnv-form-info>-->
+                  </td>
+                  <td>
+                    <input
+                      id="info-{{ index }}-label"
+                      type="text"
+                      class="form-control"
+                      [ngrxFormControlState]="
+                          mrsnv.controls.networkAttributes.controls.info.controls[index].controls
+                            .label
+                        "
+                    />
+                  </td>
+                  <td
+                    class="col d-flex justify-content-center"
+                    *ngIf="
+      mrsnv.controls.networkAttributes.controls.info.controls[index].controls
+        .filter !== undefined
+    "
+                  >
+                    <div class="form-check  form-switch h3 align-middle ms-2">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="infoFilterable-{{ index }}"
+                        [ngrxFormControlState]="
+          mrsnv.controls.networkAttributes.controls.info.controls[index].controls
+            .filter
+        "
+                      />
+<!--                      <label class="form-check-label" for="infoFilterable-{{ index }}"-->
+<!--                      >Filterable</label-->
+<!--                      >-->
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="mrsnv.isEnabled">
+                  <td
+                    *ngIf="
+                        !mrsnv.value.networkAttributes.info ||
+                        mrsnv.value.networkAttributes.info.length === 0
+                      "
+                  >
+                    <app-tip tipText="Further information"></app-tip>
+                    &nbsp;Info
+                  </td>
+                  <td [attr.colspan]="2">
+                    <!-- Dropdown: Add info item -->
+                    <select
+                      class="form-select"
+                      aria-label="Select additional info property"
+                      (change)="handleAddInfo($event)"
+                    >
+                      <option value="" [defaultSelected]="true">
+                        Choose an info property to add to network
+                      </option>
+                      <option *ngFor="let optInfo of candidatesInfos" [value]="optInfo.name">
+                        {{ optInfo.name }}
+                      </option>
+                    </select>
+                  </td>
+                </tr>
+              </ng-container>
+              </tbody>
+            </table>
+
+            <div
+              class="alert alert-danger"
+              role="alert"
+              *ngIf="mrsnv.controls.networkAttributes.errors.errorMessage"
+            >
+              {{ mrsnv.controls.networkAttributes.errors.errorMessage }}
+            </div>
+
+          </div>
+
+<!--          <app-collapsible headline="General settings" [content]="settingsMisc"></app-collapsible>-->
+<!--          <app-collapsible-->
+<!--            headline="Network Attributes"-->
+<!--            [content]="settingsNetworkAttributes"-->
+<!--          ></app-collapsible>-->
+
+          <!-- settings: miscellaneous -->
+<!--          <ng-template #settingsMisc>-->
+<!--            <div class="row mb-3">-->
+<!--              <label for="mrsnvSeparator" class="col-md-2 col-form-label"> Separator </label>-->
+
+<!--              &lt;!&ndash; separator input (if not null) &ndash;&gt;-->
+<!--              <div class="col-md-6" *ngIf="mrsnv.value.separator !== null">-->
+<!--                <input-->
+<!--                  [ngrxFormControlState]="mrsnv.controls.separator"-->
+<!--                  type="text"-->
+<!--                  class="form-control"-->
+<!--                  id="mrsnvSeparator"-->
+<!--                />-->
+<!--                <span class="small text-muted" *ngIf="mrsnv.controls.separator.isInvalid">-->
+<!--                  Separator is required for parsing the node attributes-->
+<!--                </span>-->
+<!--              </div>-->
+
+<!--              &lt;!&ndash; Enable / submit separator &ndash;&gt;-->
+<!--              <div class="col-md-4" *ngIf="mrsnv.value.separator !== null">-->
+<!--                <div class="col d-grid gap-2" *ngIf="mrsnv.controls.separator.isDisabled">-->
+<!--                  <button-->
+<!--                    class="btn btn-outline-warning"-->
+<!--                    type="button"-->
+<!--                    (click)="enableSeparator.emit()"-->
+<!--                  >-->
+<!--                    <fa-icon icon="edit"></fa-icon>&nbsp;Edit-->
+<!--                  </button>-->
+<!--                </div>-->
+
+<!--                <div class="row" *ngIf="mrsnv.controls.separator.isEnabled">-->
+<!--                  <div class="col d-grid gap-2">-->
+<!--                    <button-->
+<!--                      class="btn btn-outline-success"-->
+<!--                      type="button"-->
+<!--                      [disabled]="-->
+<!--                        mrsnv.value.separator === undefined || mrsnv.value.separator.trim() === ''-->
+<!--                      "-->
+<!--                      (click)="submitSeparator.emit()"-->
+<!--                    >-->
+<!--                      <fa-icon icon="check"></fa-icon>&nbsp;Submit-->
+<!--                    </button>-->
+<!--                  </div>-->
+<!--                  <div class="col d-grid gap-2">-->
+<!--                    <button-->
+<!--                      class="btn btn-outline-warning"-->
+<!--                      type="button"-->
+<!--                      [disabled]="-->
+<!--                        mrsnv.value.savedSeparator === null || mrsnv.value.savedSeparator === ''-->
+<!--                      "-->
+<!--                      (click)="resetSeparator.emit()"-->
+<!--                    >-->
+<!--                      <fa-icon icon="redo"></fa-icon>&nbsp;Discard-->
+<!--                    </button>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+
+<!--              &lt;!&ndash; separator buttons (if null) &ndash;&gt;-->
+<!--              <div class="col-md-10" *ngIf="mrsnv.value.separator === null">-->
+<!--                <div class="row">-->
+<!--                  <div class="col d-grid gap-2">-->
+<!--                    <button-->
+<!--                      class="btn btn-outline-warning"-->
+<!--                      type="button"-->
+<!--                      (click)="setDefaultSeparatorEmitter.emit()"-->
+<!--                    >-->
+<!--                      Use the default character <code>_</code> (underscore)-->
+<!--                    </button>-->
+<!--                  </div>-->
+<!--                  <div class="col d-grid gap-2">-->
+<!--                    <button-->
+<!--                      class="btn btn-outline-warning"-->
+<!--                      type="button"-->
+<!--                      (click)="setCustomSeparator.emit()"-->
+<!--                    >-->
+<!--                      Enable the text field for custom character-->
+<!--                    </button>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; separator hint &ndash;&gt;-->
+<!--            <div class="row mb-1" *ngIf="mrsnv.value.separator === null">-->
+<!--              <div class="col-md-2">&nbsp;</div>-->
+<!--              <div class="col-md-10">-->
+<!--                <div class="alert alert-warning" role="alert">-->
+<!--                  <p>-->
+<!--                    <b>Separator is missing</b>:&nbsp;Right now the separator is not defined. As a-->
+<!--                    result, the <code>nodeAttributes</code> cannot be parsed properly. To solve that-->
+<!--                    issue, set the value for the separator. If you are uncertain, what your-->
+<!--                    network's separator value should be, check out the-->
+<!--                    <code>nodeAttributes</code> aspect in your network file.-->
+<!--                  </p>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            <div class="row mb-3">-->
+<!--              <div class="col-md-2">&nbsp;</div>-->
+<!--              <div class="col-md-10">-->
+<!--                <div class="alert alert-primary" role="alert">-->
+<!--                  <p>-->
+<!--                    <b>Please note</b>:&nbsp;Separators are crucial for parsing the data structure,-->
+<!--                    specifically the <code>nodeAttributes</code>. It separates the sub-network ID-->
+<!--                    from the respective property. The example below shows two items from-->
+<!--                    <code>nodeAttributes</code>, both relating to node <code>nodeId1</code>, holding-->
+<!--                    values for the same property (<code>propertyname</code>) in two different-->
+<!--                    sub-networks (<code>SUBNETWORK1</code> and <code>SUBNETWORK2</code>).-->
+<!--                  </p>-->
+
+<!--                  <pre>-->
+<!--                    &#123;-->
+<!--                      "po": "nodeId1",-->
+<!--                      "n":  "SUBNETWORK1_propertyname",-->
+<!--                      "v":  1.123-->
+<!--                    &#125;,-->
+<!--                    &#123;-->
+<!--                      "po": "nodeId1",-->
+<!--                      "n":  "SUBNETWORK2_propertyname",-->
+<!--                      "v":  1.456-->
+<!--                    &#125;-->
+<!--                    </pre-->
+<!--                  >-->
+
+<!--                  <p>-->
+<!--                    The separator is commonly a single character that does neither occur in the-->
+<!--                    sub-network IDs nor in the property names. Have a look at your-->
+<!--                    <code>CX file</code>, if you are uncertain about this.-->
+<!--                  </p>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; highlight color &ndash;&gt;-->
+<!--            <div class="row mb-3">-->
+<!--              <label for="mrsnvHighlight" class="col-md-2 col-form-label"> Highlight color </label>-->
+<!--              <div class="col-md-10">-->
+<!--                <input-->
+<!--                  [ngrxFormControlState]="mrsnv.controls.highlight"-->
+<!--                  type="color"-->
+<!--                  class="form-control"-->
+<!--                  id="mrsnvHighlight"-->
+<!--                />-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </ng-template>-->
+
+          <!-- settings: network attributes -->
+<!--          <ng-template #settingsNetworkAttributes>-->
+<!--            <p>-->
+<!--              The CX data format contains by default a <code>networkAttributes</code> aspect. In-->
+<!--              <b>network attributes</b> within the <code>metaRelSubNetVis</code> aspect, you can-->
+<!--              define, which of their attributes we will consider for visualization.-->
+<!--            </p>-->
+
+<!--            <table *ngIf="mrsnv && mrsnv.value.networkAttributes" class="table">-->
+<!--              <thead>-->
+<!--                <tr>-->
+<!--                  <th>&nbsp;</th>-->
+<!--                  <th>-->
+<!--                    <app-tip-->
+<!--                      tipText="Property name in the networkAttributes within the CX data structure"-->
+<!--                    ></app-tip>-->
+<!--                    &nbsp;Name-->
+<!--                  </th>-->
+<!--                  <th>-->
+<!--                    <app-tip tipText="Name to display within the application"></app-tip>-->
+<!--                    &nbsp;Label-->
+<!--                  </th>-->
+<!--                </tr>-->
+<!--              </thead>-->
+<!--              <tbody>-->
+<!--                &lt;!&ndash; SUBNETWORKS &ndash;&gt;-->
+<!--                <tr *ngIf="mrsnv.value.networkAttributes.subnetworks">-->
+<!--                  <td>-->
+<!--                    <app-tip-->
+<!--                      tipText="Key that identifies the subnetworks in CX' proprietary networkAttributes aspect"-->
+<!--                    ></app-tip>-->
+<!--                    &nbsp;Subnetworks-->
+<!--                  </td>-->
+<!--                  <td>-->
+<!--                    &lt;!&ndash; [DISABLED] input &ndash;&gt;-->
+<!--                    <input-->
+<!--                      *ngIf="mrsnv.isDisabled"-->
+<!--                      type="text"-->
+<!--                      class="form-control"-->
+<!--                      [ngrxFormControlState]="-->
+<!--                        mrsnv.controls.networkAttributes.controls.subnetworks.controls.property-->
+<!--                      "-->
+<!--                    />-->
+<!--                    &lt;!&ndash; [ENABLED] Dropdown: Viable subnetwork properties in the network, identifiers within the network representing subnetworks &ndash;&gt;-->
+<!--                    <select-->
+<!--                      *ngIf="mrsnv.isEnabled && candidatesSubnetworks"-->
+<!--                      id="selectSubnet"-->
+<!--                      class="form-select"-->
+<!--                      aria-label="Select subnetwork property"-->
+<!--                      [ngClass]="-->
+<!--                        mrsnv.controls.networkAttributes.isInvalid ? 'ngrx-forms-invalid' : ''-->
+<!--                      "-->
+<!--                      [ngrxFormControlState]="-->
+<!--                        mrsnv.controls.networkAttributes.controls.subnetworks.controls.property-->
+<!--                      "-->
+<!--                    >-->
+<!--                      <option value="">Reset</option>-->
+<!--                      <option-->
+<!--                        *ngFor="let optSubnetwork of candidatesSubnetworks"-->
+<!--                        [value]="optSubnetwork.name"-->
+<!--                      >-->
+<!--                        {{ optSubnetwork.name }} ({{ optSubnetwork.numberOfSubnetworks }})-->
+<!--                      </option>-->
+<!--                    </select>-->
+<!--                  </td>-->
+<!--                  <td>-->
+<!--                    <input-->
+<!--                      id="subnetLabel"-->
+<!--                      type="text"-->
+<!--                      class="form-control"-->
+<!--                      [ngrxFormControlState]="-->
+<!--                        mrsnv.controls.networkAttributes.controls.subnetworks.controls.label-->
+<!--                      "-->
+<!--                    />-->
+<!--                  </td>-->
+<!--                </tr>-->
+<!--                &lt;!&ndash; GROUPS &ndash;&gt;-->
+<!--                <tr *ngIf="mrsnv.value.networkAttributes.groups">-->
+<!--                  <td>-->
+<!--                    <app-tip-->
+<!--                      tipText="Key that identifies the two groups all subnetworks are distinctly assigned to"-->
+<!--                    ></app-tip>-->
+<!--                    &nbsp;Groups-->
+<!--                  </td>-->
+<!--                  <td>-->
+<!--                    &lt;!&ndash; [DISABLED] input &ndash;&gt;-->
+<!--                    <input-->
+<!--                      *ngIf="mrsnv.isDisabled"-->
+<!--                      class="form-control"-->
+<!--                      [ngrxFormControlState]="-->
+<!--                        mrsnv.controls.networkAttributes.controls.groups.controls.property-->
+<!--                      "-->
+<!--                    />-->
+<!--                    &lt;!&ndash; [ENABLED] Dropdown: Viable group properties in the network, it has only two values (GroupA, GroupB) &ndash;&gt;-->
+<!--                    <select-->
+<!--                      *ngIf="mrsnv.isEnabled && candidatesGroups"-->
+<!--                      id="selectGroup"-->
+<!--                      class="form-select"-->
+<!--                      aria-label="Select group property"-->
+<!--                      [ngClass]="-->
+<!--                        mrsnv.controls.networkAttributes.isInvalid ? 'ngrx-forms-invalid' : ''-->
+<!--                      "-->
+<!--                      [ngrxFormControlState]="-->
+<!--                        mrsnv.controls.networkAttributes.controls.groups.controls.property-->
+<!--                      "-->
+<!--                    >-->
+<!--                      <option value="">Reset</option>-->
+<!--                      <option *ngFor="let optGroup of candidatesGroups" [value]="optGroup.name">-->
+<!--                        {{ optGroup.name }} ({{ optGroup.numberOfSubnetworks }})-->
+<!--                      </option>-->
+<!--                    </select>-->
+<!--                  </td>-->
+<!--                  <td>-->
+<!--                    <input-->
+<!--                      id="groupLabel"-->
+<!--                      type="text"-->
+<!--                      class="form-control"-->
+<!--                      [ngrxFormControlState]="-->
+<!--                        mrsnv.controls.networkAttributes.controls.groups.controls.label-->
+<!--                      "-->
+<!--                    />-->
+<!--                  </td>-->
+<!--                </tr>-->
+
+<!--                &lt;!&ndash; INFO &ndash;&gt;-->
+<!--                <ng-container *ngIf="mrsnv.value.networkAttributes.info || mrsnv.isEnabled">-->
+<!--                  <tr-->
+<!--                    *ngFor="-->
+<!--                      let info of mrsnv.value.networkAttributes.info;-->
+<!--                      let first = first;-->
+<!--                      let index = index;-->
+<!--                      trackBy: UtilService.trackByIndex-->
+<!--                    "-->
+<!--                  >-->
+<!--                    <td-->
+<!--                      *ngIf="first"-->
+<!--                      [attr.rowspan]="-->
+<!--                        mrsnv.isDisabled-->
+<!--                          ? mrsnv.value.networkAttributes.info.length-->
+<!--                          : mrsnv.value.networkAttributes.info.length + 1-->
+<!--                      "-->
+<!--                    >-->
+<!--                      <app-tip *ngIf="first" tipText="Further information"></app-tip>-->
+<!--                      &nbsp;Info-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      &lt;!&ndash; Form: Manage info items &ndash;&gt;-->
+<!--                      <app-mrsnv-form-info-->
+<!--                        [mrsnv]="mrsnv"-->
+<!--                        [candidateInfo]="info"-->
+<!--                        [candidateInfoIndex]="index"-->
+<!--                        (removeInfoEmitter)="removeInfoEmitter.emit($event)"-->
+<!--                      ></app-mrsnv-form-info>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <input-->
+<!--                        id="info-{{ index }}-label"-->
+<!--                        type="text"-->
+<!--                        class="form-control"-->
+<!--                        [ngrxFormControlState]="-->
+<!--                          mrsnv.controls.networkAttributes.controls.info.controls[index].controls-->
+<!--                            .label-->
+<!--                        "-->
+<!--                      />-->
+<!--                    </td>-->
+<!--                  </tr>-->
+<!--                  <tr *ngIf="mrsnv.isEnabled">-->
+<!--                    <td-->
+<!--                      *ngIf="-->
+<!--                        !mrsnv.value.networkAttributes.info ||-->
+<!--                        mrsnv.value.networkAttributes.info.length === 0-->
+<!--                      "-->
+<!--                    >-->
+<!--                      <app-tip tipText="Further information"></app-tip>-->
+<!--                      &nbsp;Info-->
+<!--                    </td>-->
+<!--                    <td [attr.colspan]="2">-->
+<!--                      &lt;!&ndash; Dropdown: Add info item &ndash;&gt;-->
+<!--                      <select-->
+<!--                        class="form-select"-->
+<!--                        aria-label="Select additional info property"-->
+<!--                        (change)="handleAddInfo($event)"-->
+<!--                      >-->
+<!--                        <option value="" [defaultSelected]="true">-->
+<!--                          Choose an info property to add to network-->
+<!--                        </option>-->
+<!--                        <option *ngFor="let optInfo of candidatesInfos" [value]="optInfo.name">-->
+<!--                          {{ optInfo.name }}-->
+<!--                        </option>-->
+<!--                      </select>-->
+<!--                    </td>-->
+<!--                  </tr>-->
+<!--                </ng-container>-->
+<!--              </tbody>-->
+<!--            </table>-->
+
+<!--            <div-->
+<!--              class="alert alert-danger"-->
+<!--              role="alert"-->
+<!--              *ngIf="mrsnv.controls.networkAttributes.errors.errorMessage"-->
+<!--            >-->
+<!--              {{ mrsnv.controls.networkAttributes.errors.errorMessage }}-->
+<!--            </div>-->
+<!--          </ng-template>-->
+        </ng-template>
+      </ng-container>
+
+      <ng-container
+        ngbNavItem
+        [disabled]="
+          mrsnv.value.separator === null ||
+          mrsnv.controls.separator.isEnabled ||
+          mrsnv.value.networkAttributes.subnetworks.property === '' ||
+          mrsnv.value.networkAttributes.groups.property === ''
+        "
+      >
+        <a ngbNavLink>General properties</a>
+        <ng-template ngbNavContent>
+          <div class="container ps-4 pe-3 py-2">
+            <div class="row mb-3">
+              <p>
+                <b>General properties</b> are applied to the network's visualization, when <b>no</b>
+                subnetwork is selected. These mark-up features can be selected in the sidebar to adjust
+                the visual representation.
+              </p>
+            </div>
+
+<!--          <app-mrsnv-form-properties-->
+<!--            *ngIf="mrsnv.isEnabled"-->
+<!--            [candidateProperties]="candidatesPropertiesGeneral"-->
+<!--            [candidateSelection]="candidateGeneral"-->
+<!--            (candidateSelectedEmitter)="selectCandidateGeneral.emit($event)"-->
+<!--            (addPropertyEmitter)="addPropertyGeneral.emit()"-->
+<!--          ></app-mrsnv-form-properties>-->
+
+          <app-mrsnv-property-list
+            [editable]="mrsnv.isEnabled"
+            [visibilities]="mrsnv.controls.pVisibility"
+            [keys]="mrsnv.controls.pKeys"
+            [labels]="mrsnv.controls.pLabels"
+            [mappingsKeys]="mrsnv.controls.pMappingsKeys"
+            [mappingsValues]="mrsnv.controls.pMappingsValues"
+            [thresholdsLower]="mrsnv.controls.pThresholdsLower"
+            [thresholdsSteps]="mrsnv.controls.pThresholdsStep"
+            [thresholdsUpper]="mrsnv.controls.pThresholdsUpper"
+            [types]="mrsnv.controls.pTypes"
+            [dataTypes]="mrsnv.controls.pDataTypes"
+            [distributions]="mrsnv.controls.pDistributions"
+            (addMappingStepEmitter)="addGeneralMappingStepEmitter.emit($event)"
+            (removeMappingStepEmitter)="removeGeneralMappingStepEmitter.emit($event)"
+            (showPropertyDetailsEmitter)="showGeneralPropertyDetailsEmitter.emit($event)"
+            (removePropertyMappingEmitter)="removeGeneralPropertyEmitter.emit($event)"
+          ></app-mrsnv-property-list>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <ng-container
+        ngbNavItem
+        [disabled]="
+          mrsnv.value.separator === null ||
+          mrsnv.controls.separator.isEnabled ||
+          mrsnv.value.networkAttributes.subnetworks.property === '' ||
+          mrsnv.value.networkAttributes.groups.property === ''
+        "
+      >
+        <a ngbNavLink>Individual properties</a>
+        <ng-template ngbNavContent>
+          <div class="container ps-4 pe-3 py-2">
+            <p>
+              <b>Individual properties</b> are mark-up features that can only be applied, when at
+              least one subnetwork is selected. The visualization is then generated based on
+              subnetwork-specific properties, instead of network-wide properties.
+            </p>
+
+  <!--          <app-mrsnv-form-properties-->
+  <!--            *ngIf="mrsnv.isEnabled"-->
+  <!--            [candidateProperties]="candidatesPropertiesIndividual"-->
+  <!--            [candidateSelection]="candidateIndividual"-->
+  <!--            (candidateSelectedEmitter)="selectCandidateIndividual.emit($event)"-->
+  <!--            (addPropertyEmitter)="addPropertyIndividual.emit()"-->
+  <!--          ></app-mrsnv-form-properties>-->
+
+            <app-mrsnv-property-list
+              [editable]="mrsnv.isEnabled"
+              [visibilities]="mrsnv.controls.ipVisibility"
+              [keys]="mrsnv.controls.ipKeys"
+              [labels]="mrsnv.controls.ipLabels"
+              [mappingsKeys]="mrsnv.controls.ipMappingsKeys"
+              [mappingsValues]="mrsnv.controls.ipMappingsValues"
+              [thresholdsLower]="mrsnv.controls.ipThresholdsLower"
+              [thresholdsSteps]="mrsnv.controls.ipThresholdsStep"
+              [thresholdsUpper]="mrsnv.controls.ipThresholdsUpper"
+              [types]="mrsnv.controls.ipTypes"
+              [dataTypes]="mrsnv.controls.ipDataTypes"
+              [distributions]="mrsnv.controls.ipDistributions"
+              (addMappingStepEmitter)="addIndividualMappingStepEmitter.emit($event)"
+              (removeMappingStepEmitter)="removeIndividualMappingStepEmitter.emit($event)"
+              (showPropertyDetailsEmitter)="showIndividualPropertyDetailsEmitter.emit($event)"
+              (removePropertyMappingEmitter)="removeIndividualPropertyEmitter.emit($event)"
+            ></app-mrsnv-property-list>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <ng-container
+        *ngIf="mrsnv && mrsnv.isEnabled"
+        ngbNavItem
+        [disabled]="
+          mrsnv.value.separator === null ||
+          mrsnv.controls.separator.isEnabled ||
+          mrsnv.value.networkAttributes.subnetworks.property === '' ||
+          mrsnv.value.networkAttributes.groups.property === ''
+        "
+      >
+        <a ngbNavLink>Submit to NDEx</a>
+        <ng-template ngbNavContent>
+          <app-ndex-submission
+            *ngIf="ndex"
+            [ndexFormState]="ndex"
+            [isUserOnline]="isUserOnline"
+            (searchEmitter)="ndexSearchEmitter.emit($event)"
+            (networkCandidateEmitter)="networkSelectedEmitter.emit($event)"
+            (checkNetworkRightsEmitter)="checkNetworkRightsEmitter.emit($event)"
+            (copyUuidEmitter)="copyUuidEmitter.emit($event)"
+            (submitEmitter)="submitToNdexEmitter.emit()"
+          ></app-ndex-submission>
+        </ng-template>
+      </ng-container>
+    </nav>
+
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+  </form>
+</ng-container>

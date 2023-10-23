@@ -1,0 +1,119 @@
+<h4>Current settings</h4>
+
+<app-sidebar-generator-table
+  (sidebarVisibilityChanged)="setSidebarVisibility($event)"
+  (triggerDownloadChanged)="toggleTriggerImmediateDownload()"
+  [booleanProperty]="booleanProperty$ | async"
+  [groupLabelA]="groupLabelA$ | async"
+  [groupLabelB]="groupLabelB$ | async"
+  [nodesColorBy]="nodesColorBy$ | async"
+  [nodesSizeBy]="nodesSizeBy$ | async"
+  [nodes]="nodes$ | async"
+  [patientA]="patientA$ | async"
+  [patientB]="patientB$ | async"
+  [showAll]="showAll$ | async"
+  [showShared]="showShared$ | async"
+  [subnetLabel]="subnetLabel$ | async"
+  [thresholds]="thresholds$ | async"
+  [triggerImmediateImageDownload]="triggerImmediateImageDownload$ | async"
+  [uuid]="uuid$ | async"
+>
+</app-sidebar-generator-table>
+
+<hr />
+
+<h4>Configure image options</h4>
+
+<app-sidebar-generator-form
+  (imageExtensionChanged)="setImageExtension($event)"
+  (imageScaleChanged)="setImageScale($event)"
+  (imageTransparencyChanged)="setImageTransparentBackground()"
+  [imageDownloadConfig]="imageDownloadConfig$ | async"
+  [isImageFormValid]="isImageFormValid$ | async"
+>
+</app-sidebar-generator-form>
+
+<hr />
+
+<h4>Modify sidebar component's visibility</h4>
+
+<app-sidebar-generator-component-visibility
+  (modelEmitter)="setSidebarVisibility($event)"
+  [model]="sidebarVisibility$ | async"
+  [parentVisibility]="sidebarVisibility$ | async"
+  name="Sidebar"
+  tooltip="Change the complete sidebar's visibility.<ul><li><b>Full</b>: Completely visible</li><li><b>Button</b>: Collapsed into a button</li><li><b>None</b>: Completely hidden, thus not openable</li></ul>"
+></app-sidebar-generator-component-visibility>
+
+<app-sidebar-generator-component-visibility
+  (modelEmitter)="setVisibilityPatients($event)"
+  [model]="cmpPatientsVisibility$ | async"
+  [parentVisibility]="sidebarVisibility$ | async"
+  name="Patients"
+  tooltip="Change the visibility for the patients option.<ul><li><b>Full</b>: Completely visible</li><li><b>Button</b>: Collapsed into a button</li><li><b>None</b>: Completely hidden, thus not openable</li></ul>"
+></app-sidebar-generator-component-visibility>
+
+<app-sidebar-generator-component-visibility
+  (modelEmitter)="setVisibilityThreshold($event)"
+  [model]="cmpThresholdVisibility$ | async"
+  [parentVisibility]="sidebarVisibility$ | async"
+  name="Threshold"
+  tooltip="Change the visibility for the thresholds option.<ul><li><b>Full</b>: Completely visible</li><li><b>Button</b>: Collapsed into a button</li><li><b>None</b>: Completely hidden, thus not openable</li></ul>"
+></app-sidebar-generator-component-visibility>
+
+<app-sidebar-generator-component-visibility
+  (modelEmitter)="setVisibilityNodes($event)"
+  [model]="cmpNodesVisibility$ | async"
+  [parentVisibility]="sidebarVisibility$ | async"
+  name="Nodes"
+  tooltip="Change the visibility for the nodes option.<ul><li><b>Full</b>: Completely visible</li><li><b>Button</b>: Collapsed into a button</li><li><b>None</b>: Completely hidden, thus not openable</li></ul>"
+></app-sidebar-generator-component-visibility>
+
+<app-sidebar-generator-component-visibility
+  (modelEmitter)="setVisibilityLayout($event)"
+  [model]="cmpLayoutVisibility$ | async"
+  [parentVisibility]="sidebarVisibility$ | async"
+  name="Layout"
+  tooltip="Change the visibility for the layout option.<ul><li><b>Full</b>: Completely visible</li><li><b>Button</b>: Collapsed into a button</li><li><b>None</b>: Completely hidden, thus not openable</li></ul>"
+></app-sidebar-generator-component-visibility>
+
+<app-sidebar-generator-component-visibility
+  (modelEmitter)="setVisibilityDownload($event)"
+  [model]="cmpDownloadVisibility$ | async"
+  [parentVisibility]="sidebarVisibility$ | async"
+  name="Download"
+  tooltip="Change the visibility for the download option.<ul><li><b>Full</b>: Completely visible</li><li><b>Button</b>: Collapsed into a button</li><li><b>None</b>: Completely hidden, thus not openable</li></ul>"
+></app-sidebar-generator-component-visibility>
+
+<app-sidebar-generator-component-visibility
+  (modelEmitter)="setVisibilityGenerator($event)"
+  [model]="cmpGeneratorVisibility$ | async"
+  [parentVisibility]="sidebarVisibility$ | async"
+  name="Link generator"
+  tooltip="Change the visibility for the link download option.<ul><li><b>Full</b>: Completely visible</li><li><b>Button</b>: Collapsed into a button</li><li><b>None</b>: Completely hidden, thus not openable</li></ul>"
+></app-sidebar-generator-component-visibility>
+
+<app-sidebar-generator-component-visibility
+  (modelEmitter)="setVisibilityImpressum($event)"
+  [model]="cmpImpressumVisibility$ | async"
+  [parentVisibility]="sidebarVisibility$ | async"
+  name="Impressum"
+  tooltip="Change the visibility for the legal impressum option.<ul><li><b>Full</b>: Completely visible</li><li><b>Button</b>: Collapsed into a button</li><li><b>None</b>: Completely hidden, thus not openable</li></ul>"
+></app-sidebar-generator-component-visibility>
+
+<!-- back button -->
+<app-sidebar-generator-bool-visibility
+  (modelEmitter)="setVisibilityBackButton($event)"
+  [model]="backButtonVisibility$ | async"
+  [parentVisibility]="sidebarVisibility$ | async"
+  name="Back button"
+  tooltip="Change the visibility for the back button.<ul><li><b>None</b>: Button will not be visible</li><li><b>Full</b>: Button will be visible</li></ul>"
+></app-sidebar-generator-bool-visibility>
+
+<hr />
+
+<app-sidebar-generator-result
+  (copyTrigger)="buildAndCopyUrl()"
+  [isImageFormValid]="isImageFormValid$ | async"
+  [url]="url$ | async"
+></app-sidebar-generator-result>

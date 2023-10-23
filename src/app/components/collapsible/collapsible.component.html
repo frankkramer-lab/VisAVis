@@ -1,0 +1,21 @@
+<div class="row d-flex align-items-baseline">
+  <div class="col-auto">
+    <button
+      (click)="collapse.toggle(); clickEmitter.emit()"
+      [attr.aria-expanded]="!hidden"
+      aria-controls="collapseExample"
+      class="btn btn-link"
+      type="button"
+    >
+      <fa-icon *ngIf="!hidden" [size]="iconSize" icon="chevron-circle-down"></fa-icon>
+      <fa-icon *ngIf="hidden" [size]="iconSize" icon="chevron-circle-right"></fa-icon>
+    </button>
+  </div>
+  <div class="col">
+    <h5>{{ headline }}</h5>
+  </div>
+</div>
+
+<div #collapse="ngbCollapse" [(ngbCollapse)]="hidden" [animation]="animation">
+  <ng-container *ngTemplateOutlet="content" class="card-body"></ng-container>
+</div>

@@ -1,0 +1,421 @@
+<div class="row" *ngIf="editable && distribution">
+  <div class="col" *ngIf="distribution.discrete">
+    <app-chart-bar
+      [chartData]="distribution.discrete.total"
+      [propertyName]="key.value"
+      [isContinuous]="false"
+    ></app-chart-bar>
+  </div>
+  <div class="col" *ngIf="distribution.continuous">
+    <app-chart-bar
+      [chartData]="distribution.continuous.total"
+      [propertyName]="key.value"
+      [isContinuous]="true"
+    ></app-chart-bar>
+  </div>
+</div>
+
+<!-- FIXME -->
+<div class="d-grid mt-3 mb-3" *ngIf="editable">
+  <button type="button" class="btn btn-outline-danger" (click)="removePropertyMappingEmitter.emit()">
+    <fa-icon icon="trash"></fa-icon>&nbsp;Remove this property mapping
+  </button>
+</div>
+
+<div class="row mb-3">
+  <div class="col-4">
+    <div class="row">
+      <div class="input-group">
+        <div class="input-group-text" id="basic-attribute-label">
+          <app-tip [tipText]="tipLabel" placement="right" padding="p-0 pe-2"></app-tip>
+          Label
+        </div>
+          <input type="text" class="form-control col-8 value" aria-describedby="basic-attribute-label" [ngrxFormControlState]="label" />
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="row">
+      <div class="input-group">
+        <div class="input-group-text" id="basic-attribute-cx">
+          <app-tip [tipText]="tipKey" placement="right" padding="p-0 pe-2"></app-tip>
+          Attribute
+        </div>
+        <input type="text" class="form-control col-8 value" aria-describedby="basic-attribute-cx" value="{{ key.value }}" disabled readonly/>
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+    <app-mrsnv-property-mapping
+    [editable]="editable"
+    [mappingType]="propertyType"
+    ></app-mrsnv-property-mapping>
+  </div>
+</div>
+<div class="row mb-3" *ngIf="propertyType.value === 'continuous'">
+  <h5>Threshold</h5>
+  <div class="col-4">
+    <div class="row">
+      <div class="input-group">
+        <div class="input-group-text" id="threshold-label-min">
+          <app-tip [tipText]="tipLabel" placement="right" padding="p-0 pe-2"></app-tip>
+          Min.
+        </div>
+        <input type="text" class="form-control col-8 value"
+               aria-describedby="threshold-label-min"
+               [ngrxFormControlState]="thresholdLower" />
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="row">
+      <div class="input-group">
+        <div class="input-group-text" id="threshold-label-max">
+          <app-tip [tipText]="tipLabel" placement="right" padding="p-0 pe-2"></app-tip>
+          Max.
+        </div>
+        <input type="text" class="form-control col-8 value"
+               aria-describedby="threshold-label-max"
+               [ngrxFormControlState]="thresholdUpper" />
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="row">
+      <div class="input-group">
+        <div class="input-group-text" id="threshold-label-step">
+          <app-tip [tipText]="tipLabel" placement="right" padding="p-0 pe-2"></app-tip>
+          Step
+        </div>
+        <input type="text" class="form-control col-8 value"
+               aria-describedby="threshold-label-min"
+               [ngrxFormControlState]="thresholdStep" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-8">
+    <h5>Mapping</h5>
+    <ng-container
+      *ngFor="
+            let value of mappingValues.controls;
+            let keyIndex = index;
+            trackBy: UtilService.trackByIndex
+          "
+    >
+      <div class="row">
+        <div class="col-6" *ngIf="!editable">
+          <div class="row">
+            <div class="input-group">
+              <div class="input-group-text" id="mapping-key-label">
+                <app-tip [tipText]="tipLabel" placement="right" padding="p-0 pe-2"></app-tip>
+                Property value
+              </div>
+              <input type="text" class="form-control col-8 value"
+                     aria-describedby="mapping-key-label"
+                     [ngrxFormControlState]="mappingKeys.controls[keyIndex]" />
+            </div>
+          </div>
+        </div>
+        <div class="col-6" *ngIf="!editable">
+          <app-color
+            [label]=" 'Mapped color' "
+            [color]="value.value"
+            [editable]="false"
+          ></app-color>
+        </div>
+      </div>
+      <div class="row" *ngIf="keyIndex !== mappingValues.controls.length - 1">
+        <div class="col-12">
+          <hr class="my-2"/>
+        </div>
+      </div>
+    </ng-container>
+
+
+<!--    <table class="table">-->
+<!--&lt;!&ndash;      <thead>&ndash;&gt;-->
+<!--&lt;!&ndash;      <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>Property value</th>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>Assigned color</th>&ndash;&gt;-->
+<!--&lt;!&ndash;      </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;      </thead>&ndash;&gt;-->
+<!--      <tbody>-->
+<!--      <tr-->
+<!--        *ngFor="-->
+<!--            let value of mappingValues.controls;-->
+<!--            let keyIndex = index;-->
+<!--            trackBy: UtilService.trackByIndex-->
+<!--          "-->
+<!--      >-->
+<!--        <td>-->
+<!--            <span *ngIf="editable">-->
+<!--              <div class="input-group">-->
+<!--                <button-->
+<!--                  class="btn btn-danger"-->
+<!--                  type="button"-->
+<!--                  (click)="removeMappingStepEmitter.emit(keyIndex)"-->
+<!--                >-->
+<!--                  <fa-icon icon="trash"></fa-icon>-->
+<!--                </button>-->
+<!--                <input-->
+<!--                  *ngIf="dataType === 'string' || dataType === 'boolean'"-->
+<!--                  type="text"-->
+<!--                  class="form-control"-->
+<!--                  [ngrxFormControlState]="mappingKeys.controls[keyIndex]"-->
+<!--                />-->
+<!--                <input-->
+<!--                  *ngIf="dataType !== 'string' && dataType !== 'boolean'"-->
+<!--                  type="number"-->
+<!--                  class="form-control"-->
+<!--                  [ngrxFormControlState]="mappingKeys.controls[keyIndex]"-->
+<!--                />-->
+<!--              </div>-->
+<!--            </span>-->
+<!--          <span *ngIf="!editable">-->
+<!--&lt;!&ndash;              {{ mappingKeys.value[keyIndex] }}&ndash;&gt;-->
+<!--            <div class="row">-->
+<!--              <div class="input-group">-->
+<!--                <div class="input-group-text" id="mapping-key-label">-->
+<!--                  <app-tip [tipText]="tipLabel" placement="right" padding="p-0 pe-2"></app-tip>-->
+<!--                  Property value-->
+<!--                </div>-->
+<!--                <input type="text" class="form-control col-8 value"-->
+<!--                       aria-describedby="mapping-key-label"-->
+<!--                       [ngrxFormControlState]="mappingKeys.controls[keyIndex]" />-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            </span>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--          <app-color-->
+<!--            [label]=" 'Mapped color' "-->
+<!--            [color]="value.value"-->
+<!--            [editable]="false"-->
+<!--          ></app-color>-->
+<!--&lt;!&ndash;          <input&ndash;&gt;-->
+<!--&lt;!&ndash;            [ngrxFormControlState]="value"&ndash;&gt;-->
+<!--&lt;!&ndash;            class="form-control form-control-color custom"&ndash;&gt;-->
+<!--&lt;!&ndash;            type="color"&ndash;&gt;-->
+<!--&lt;!&ndash;          />&ndash;&gt;-->
+<!--        </td>-->
+<!--      </tr>-->
+<!--      &lt;!&ndash; Button to add item &ndash;&gt;-->
+<!--      <tr *ngIf="editable">-->
+<!--        <td [attr.colspan]="3">-->
+<!--          <div class="d-grid">-->
+<!--            <button-->
+<!--              type="button"-->
+<!--              class="btn btn-outline-primary"-->
+<!--              (click)="addMappingStepEmitter.emit()"-->
+<!--            >-->
+<!--              <fa-icon icon="plus"></fa-icon>&nbsp;Add mapping step-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </td>-->
+<!--      </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
+  </div>
+</div>
+
+<!--<div class="row">-->
+<!--  <div class="col-lg-6">-->
+<!--    <h5>Basics</h5>-->
+<!--    <table class="table">-->
+<!--      <thead>-->
+<!--        <tr>-->
+<!--          <th>Attribute</th>-->
+<!--          <th>Value</th>-->
+<!--        </tr>-->
+<!--      </thead>-->
+<!--      <tbody>-->
+<!--        <tr>-->
+<!--          <td>-->
+<!--            <app-tip [tipText]="tipLabel" placement="right"></app-tip>-->
+<!--            Label-->
+<!--          </td>-->
+<!--          <td>-->
+<!--            <input type="text" class="form-control" [ngrxFormControlState]="label" />-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--          <td>-->
+<!--            <app-tip [tipText]="tipKey" placement="right"></app-tip>-->
+<!--            CX Key-->
+<!--          </td>-->
+<!--          <td>{{ key.value }}</td>-->
+<!--        </tr>-->
+<!--        <tr *ngIf="editable">-->
+<!--          <td>-->
+<!--            <app-tip [tipText]="tipDataType" placement="right"></app-tip>-->
+<!--            Data type-->
+<!--          </td>-->
+<!--          <td>{{ dataType }}</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--          <td>-->
+<!--            <app-tip [tipText]="tipType" placement="right"></app-tip>-->
+<!--            Mapping type-->
+<!--          </td>-->
+<!--          <td>-->
+<!--            <ng-container *ngIf="editable">-->
+<!--              <select class="form-select" [ngrxFormControlState]="propertyType">-->
+<!--                <option-->
+<!--                  *ngIf="dataType === 'integer' || dataType === 'double' || dataType === 'long'"-->
+<!--                  value="continuous"-->
+<!--                >-->
+<!--                  Continuous-->
+<!--                </option>-->
+<!--                <option *ngIf="dataType === 'boolean'" value="boolean">Boolean</option>-->
+<!--                <option value="discrete">Discrete</option>-->
+<!--              </select>-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngIf="!editable">-->
+<!--              <span *ngIf="propertyType.value === 'continuous'">Continuous</span>-->
+<!--              <span *ngIf="propertyType.value === 'discrete'">Discrete</span>-->
+<!--              <span *ngIf="propertyType.value === 'boolean'">Boolean</span>-->
+<!--            </ng-container>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        <tr *ngIf="propertyType.value === 'continuous'">-->
+<!--          <td [attr.rowspan]="3">-->
+<!--            <app-tip [tipText]="tipThreshold" placement="right"></app-tip>-->
+<!--            Threshold-->
+<!--          </td>-->
+<!--          <td>-->
+<!--            <ng-container *ngIf="editable">-->
+<!--              <label class="form-label" for="threshold-min-{{ propertyIndex }}"><b>Min</b>:</label>-->
+<!--              <input-->
+<!--                class="form-control"-->
+<!--                type="number"-->
+<!--                id="threshold-min-{{ propertyIndex }}"-->
+<!--                [ngrxFormControlState]="thresholdLower"-->
+<!--              />-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngIf="!editable"> <b>Min</b>: {{ thresholdLower.value }} </ng-container>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        <tr *ngIf="propertyType.value === 'continuous'">-->
+<!--          <td>-->
+<!--            <ng-container *ngIf="editable">-->
+<!--              <label class="form-label" for="threshold-max-{{ propertyIndex }}"><b>Max</b>:</label>-->
+<!--              <input-->
+<!--                class="form-control"-->
+<!--                type="number"-->
+<!--                id="threshold-max-{{ propertyIndex }}"-->
+<!--                [ngrxFormControlState]="thresholdUpper"-->
+<!--              />-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngIf="!editable"> <b>Max</b>: {{ thresholdUpper.value }} </ng-container>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        <tr *ngIf="propertyType.value === 'continuous'">-->
+<!--          <td>-->
+<!--            <ng-container *ngIf="editable">-->
+<!--              <label class="form-label" for="threshold-step-{{ propertyIndex }}"-->
+<!--                ><b>Step</b>:</label-->
+<!--              >-->
+<!--              <input-->
+<!--                class="form-control"-->
+<!--                type="number"-->
+<!--                id="threshold-step-{{ propertyIndex }}"-->
+<!--                [ngrxFormControlState]="thresholdStep"-->
+<!--              />-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngIf="!editable"> <b>Step</b>: {{ thresholdStep.value }} </ng-container>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
+<!--  </div>-->
+
+<!--  <div class="col-lg-6">-->
+<!--    <h5>Mapping</h5>-->
+<!--    <table class="table">-->
+<!--      <thead>-->
+<!--        <tr>-->
+<!--          <th>Property value</th>-->
+<!--          <th>Assigned color</th>-->
+<!--        </tr>-->
+<!--      </thead>-->
+<!--      <tbody>-->
+<!--        <tr-->
+<!--          *ngFor="-->
+<!--            let value of mappingValues.controls;-->
+<!--            let keyIndex = index;-->
+<!--            trackBy: UtilService.trackByIndex-->
+<!--          "-->
+<!--        >-->
+<!--          <td>-->
+<!--            <span *ngIf="editable">-->
+<!--              <div class="input-group">-->
+<!--                <button-->
+<!--                  class="btn btn-danger"-->
+<!--                  type="button"-->
+<!--                  (click)="removeMappingStepEmitter.emit(keyIndex)"-->
+<!--                >-->
+<!--                  <fa-icon icon="trash"></fa-icon>-->
+<!--                </button>-->
+<!--                <input-->
+<!--                  *ngIf="dataType === 'string' || dataType === 'boolean'"-->
+<!--                  type="text"-->
+<!--                  class="form-control"-->
+<!--                  [ngrxFormControlState]="mappingKeys.controls[keyIndex]"-->
+<!--                />-->
+<!--                <input-->
+<!--                  *ngIf="dataType !== 'string' && dataType !== 'boolean'"-->
+<!--                  type="number"-->
+<!--                  class="form-control"-->
+<!--                  [ngrxFormControlState]="mappingKeys.controls[keyIndex]"-->
+<!--                />-->
+<!--              </div>-->
+<!--            </span>-->
+<!--            <span *ngIf="!editable">-->
+<!--              {{ mappingKeys.value[keyIndex] }}-->
+<!--            </span>-->
+<!--          </td>-->
+<!--          <td>-->
+<!--            <input-->
+<!--              [ngrxFormControlState]="value"-->
+<!--              class="form-control form-control-color custom"-->
+<!--              type="color"-->
+<!--            />-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        &lt;!&ndash; Button to add item &ndash;&gt;-->
+<!--        <tr *ngIf="editable">-->
+<!--          <td [attr.colspan]="3">-->
+<!--            <div class="d-grid">-->
+<!--              <button-->
+<!--                type="button"-->
+<!--                class="btn btn-outline-primary"-->
+<!--                (click)="addMappingStepEmitter.emit()"-->
+<!--              >-->
+<!--                <fa-icon icon="plus"></fa-icon>&nbsp;Add mapping step-->
+<!--              </button>-->
+<!--            </div>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!-- tooltips -->
+<ng-template #tipKey>Name of this property within the network's <b>data structure</b></ng-template>
+<ng-template #tipLabel>Name of this property within the <b>sidebar</b></ng-template>
+<ng-template #tipDataType>
+  Data type of this property. Mappings can only be created for numeric, string or boolean type
+  properties.
+</ng-template>
+<ng-template #tipType
+  >Type of this property mapping. There are <b>continuous</b>, <b>discrete</b> and <b>boolean</b>.
+</ng-template>
+<ng-template #tipThreshold
+  >If set, this property can be used as a threshold to hide nodes in the visualization. Can only be
+  true for <b>continuous</b> properties. Leave empty, if you don't want this mapping to be a node
+  slider.
+</ng-template>

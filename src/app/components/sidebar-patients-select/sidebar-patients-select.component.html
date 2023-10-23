@@ -1,0 +1,92 @@
+<!-- GROUP LABEL -->
+<label class="h6" for="subnetwork">{{ groupLabel }}</label>
+
+<!-- List of subnetworks -->
+<ng-container *ngIf="subnetworkList && selectedSubnetwork === null">
+  <select #subnetwork id="subnetwork" class="form-select scroll-style" size="7"
+          aria-label="Select subnetwork">
+    <option
+      *ngFor="let subnetwork of subnetworkList"
+      [value]="subnetwork"
+      (click)="subnetworkSelectionChangedEmitter.emit(subnetwork)"
+    >
+      {{ subnetwork | subnetworkLabel: (filterByProperty ? filterByProperty.property : null) }}
+    </option>
+  </select>
+</ng-container>
+
+<!-- Info about selected subnetwork -->
+<ng-container *ngIf="selectedSubnetwork">
+  <!-- Tag -->
+  <div class="row">
+
+    <div class="col">
+
+      <!-- component -->
+      <app-tag [text]="selectedSubnetwork.name"
+               [tooltipAfterClick]="false"
+               colorHighlight="#fa5555"
+               colorBackground="#4e4e4e"
+               colorBorder="#000"
+               colorText="#fff"
+               tooltip="Click to remove this subnetwork"
+               icon="times" (click)="subnetworkSelectionChangedEmitter.emit(null)">
+      </app-tag>
+    </div>
+  </div>
+  <!-- pill -->
+  <!--    <span class="badge rounded-pill text-bg-dark p-3 m-1 col cursor"-->
+  <!--          (click)="subnetworkSelectionChangedEmitter.emit(null)"-->
+  <!--          ngbTooltip="Click to remove this subnetwork"-->
+  <!--          placement="bottom"-->
+  <!--          container="body"-->
+  <!--          [openDelay]="1000">-->
+  <!--      {{selectedSubnetwork.name}}-->
+  <!--    </span>-->
+
+
+  <!-- custom css -->
+  <!--    <span #selection id="selection"-->
+  <!--          (click)="subnetworkSelectionChangedEmitter.emit(null)"-->
+  <!--          class="cursor col m-3"-->
+  <!--          [openDelay]="1000"-->
+  <!--          container="body"-->
+  <!--          ngbTooltip="Click to remove this subnetwork">-->
+  <!--      {{selectedSubnetwork.name}}-->
+  <!--      <span #selectionRemove id="selectionRemove">-->
+  <!--        <fa-icon icon="times" class="text-light"></fa-icon>-->
+  <!--      </span>-->
+  <!--    </span>-->
+
+
+  <!-- original -->
+  <!--    <input-->
+  <!--      aria-label="Selected subnetwork"-->
+  <!--      class="form-control"-->
+  <!--      id="subnetworkSelection"-->
+  <!--      type="text"-->
+  <!--      [readonly]="true"-->
+  <!--      [value]="selectedSubnetwork.name"-->
+  <!--    />-->
+  <!--    <button-->
+  <!--      (click)="subnetworkSelectionChangedEmitter.emit(null)"-->
+  <!--      class="btn btn-dark"-->
+  <!--      id="subnetworkSelectionReset"-->
+  <!--      type="button"-->
+  <!--      ngbTooltip="Unselect this subnetwork"-->
+  <!--      [openDelay]="1000"-->
+  <!--    >-->
+  <!--      <fa-icon icon="times"></fa-icon>-->
+  <!--    </button>-->
+  <!--  </div>-->
+
+  <!-- Info -->
+  <ng-container *ngFor="let info of selectedSubnetwork.info; let i = index">
+    <div class="ps-1 pe-1 mt-2">
+      <label for="info-{{ i }}">{{ info.propertyLabel }}</label>
+      <div id="info-{{ i }}">
+        <b>{{ info.patientValue }}</b>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

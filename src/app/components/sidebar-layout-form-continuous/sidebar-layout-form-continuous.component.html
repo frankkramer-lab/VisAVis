@@ -1,0 +1,25 @@
+<div class="form-check">
+  <input
+    (click)="propertyClicked.emit()"
+    [checked]="isChecked"
+    [value]="property"
+    class="form-check-input"
+    id="{{ type }}{{ propertyId }}"
+    name="{{ type }}{{ propertyId }}"
+    type="radio"
+  />
+  <label class="form-check-label w-100" for="{{ type }}{{ propertyId }}">
+    <span>
+      by <b>{{ property?.label ?? property?.name ?? '' }}</b></span
+    >
+
+    <!-- only relevant for coloring -->
+    <ng-container *ngIf="isChecked && type === 'color'">
+      <div [style.background]="gradient" class="gradient"></div>
+      <div *ngIf="isChecked" class="row">
+        <small *ngIf="minLabel !== null" class="col text-start">{{ minLabel | norm: 2 }}</small>
+        <small *ngIf="maxLabel !== null" class="col text-end">{{ maxLabel | norm: 2 }}</small>
+      </div>
+    </ng-container>
+  </label>
+</div>

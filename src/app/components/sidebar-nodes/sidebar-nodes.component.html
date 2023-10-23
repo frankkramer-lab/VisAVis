@@ -1,0 +1,14 @@
+<app-sidebar-nodes-form
+  (filterTermChanged)="triggerFilterTermChanged($event)"
+  (nodeClicked)="triggerMarkNode($event)"
+  (sortingChanged)="triggerSorting($event)"
+  (unmarkAllNodes)="triggerUnmarkAllNodes()"
+  [markedNodes]="markedNodes$ | async"
+  [nodes]="nodes$ | async"
+  [numberOfColumns]="numberOfColumns$ | async"
+  [occurrences]="occurrences$ | async"
+  [filterProperty]="filterProperty$ | async"
+  [patientAValue]="patientAValue$ | async"
+  [patientBValue]="patientBValue$ | async"
+>
+</app-sidebar-nodes-form>

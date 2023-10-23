@@ -1,0 +1,16 @@
+.nav-item{
+  > .nav-link {
+    color:#2f2f2f !important;
+  }
+  > .disabled {
+    color: #616161 !important;
+  }
+  &.disabled {
+    cursor: not-allowed;
+  }
+}
+
+.nav-item .ndex-login-status {
+  left: 70% !important;
+  top: 15% !important;
+}

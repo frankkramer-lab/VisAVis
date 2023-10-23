@@ -1,0 +1,7 @@
+.non-editable {
+  > label{
+    cursor: default;
+    max-font-size: 1em;
+    //font-size: 0.85vw;
+  }
+}

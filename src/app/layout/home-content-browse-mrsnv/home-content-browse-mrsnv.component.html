@@ -1,0 +1,77 @@
+<app-collapsible
+  [animation]="true"
+  [content]="mrsnvForm"
+  [hidden]="false"
+  [iconSize]="'xl'"
+  headline="Visualization settings"
+  class="px-0"
+></app-collapsible>
+
+<ng-template #mrsnvForm>
+  <ng-container *ngIf="selectedNetwork">
+    <div *ngIf="!selectedNetwork.isValid && !selectedNetwork.validAspects" class="alert alert-warning mt-2 mb-0 mx-3" role="alert">
+      This network does not contain a visualization settings. The settings are stored within the network as <code>metaRelSubNetVis</code> aspect. Click the button to create it!
+    </div>
+  </ng-container>
+
+  <div class="row mt-3 mb-2 mx-1">
+    <!-- BTN: edit network aspect -->
+    <div
+      class="col-auto"
+      *ngIf="selectedNetwork?.isValid === true && selectedNetwork?.validAspects === true"
+    >
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        [openDelay]="1000"
+        container="body"
+        placement="bottom"
+        ngbTooltip="Edit the metaRelSubNetVis aspect to change the visualization result"
+        (click)="editMrsnv.emit()"
+        [disabled]="setupInProgress || isCheckingCompatibility === true"
+      >
+        <fa-icon icon="edit"></fa-icon>
+        Edit Visualization
+      </button>
+    </div>
+
+    <!-- BTN: create network aspect -->
+    <div
+      class="col-auto"
+      *ngIf="selectedNetwork?.isValid === false && selectedNetwork?.validAspects === false"
+    >
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        [openDelay]="1000"
+        container="body"
+        placement="bottom"
+        ngbTooltip="Create the VisAVis aspect to to load the network into the application"
+        (click)="editMrsnv.emit()"
+        [disabled]="setupInProgress || isCheckingCompatibility === true"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        Create Visualization
+      </button>
+    </div>
+
+    <!-- Info text -->
+    <div class="col">
+      <p>
+        The visualization of the network is based on the data contained in its attributes.
+        This information need to be specified in a certain way so it can be used by this application.
+        Those settings are also stored within the network itself as a separate aspect.
+        The <code>VisAVis</code> aspect follows a specific
+        <span (click)="showModal.emit()" class="link-primary cursor text-decoration-underline"
+          >format</span>.
+        To simplify its usage, this application provides a user interface to display, create, and edit this visualization settings based on the network's data.
+      </p>
+    </div>
+  </div>
+
+  <!-- Display visualization settings AKA mrsnv aspect-->
+  <ng-container *ngIf="selectedNetwork">
+    <app-mrsnv-form *ngIf="selectedNetwork.isValid === true" [mrsnv]="mrsnv"></app-mrsnv-form>
+  </ng-container>
+
+</ng-template>

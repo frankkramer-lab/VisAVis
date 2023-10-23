@@ -1,0 +1,270 @@
+<p>
+  The changes you make to a network should be persisted to <b>NDEx</b>. If you have the rights to
+  edit the chosen network, you can update it. In that case, the network's unique identifier will not
+  change. If however, you are not able to override the network, you will have to create a new
+  network in your account. Either way: You are required to login to NDEx.
+</p>
+<ng-container *ngIf="ndexFormState">
+  <form [ngrxFormState]="ndexFormState">
+    <!-- Submission mode -->
+    <div class="mb-3 d-grid">
+      <div class="btn-group" role="group" aria-label="Network submission mode">
+        <input
+          type="radio"
+          class="btn-check"
+          name="btnradio"
+          id="mode-update"
+          autocomplete="off"
+          [disabled]="ndexFormState.value.uploadInProgress"
+          [value]="0"
+          [ngrxFormControlState]="ndexFormState.controls.submissionMode"
+        />
+        <label class="btn btn-outline-primary" for="mode-update">
+          <fa-icon icon="edit"></fa-icon>&nbsp;Update existing
+        </label>
+
+        <input
+          type="radio"
+          class="btn-check"
+          name="btnradio"
+          id="mode-new"
+          autocomplete="off"
+          [disabled]="ndexFormState.value.uploadInProgress"
+          [value]="1"
+          [ngrxFormControlState]="ndexFormState.controls.submissionMode"
+        />
+        <label class="btn btn-outline-primary" for="mode-new">
+          <fa-icon icon="plus"></fa-icon>&nbsp;Create new
+        </label>
+      </div>
+    </div>
+
+    <!-- OVERRIDE: search and select a writeable network -->
+    <div *ngIf="ndexFormState.value.submissionMode === 0" class="mb-3">
+      <p>Search NDEx to find a network to override.</p>
+      <!-- search bar -->
+      <app-search-bar
+        placeholder="Search..."
+        [disabled]="ndexFormState.value.searchInProgress || ndexFormState.value.uploadInProgress"
+        (clickEmitter)="searchEmitter.emit($event)"
+      ></app-search-bar>
+
+      <!-- ERRORS -->
+      <ng-container *ngIf="ndexFormState.value.searchError !== null">
+        <!-- hint: empty result -->
+        <div class="card border-warning mt-2" *ngIf="ndexFormState.value.searchError.type === 1">
+          <div class="card-body">
+            <h5 class="card-title">Empty result</h5>
+            <p class="card-text">
+              The term you queried did not yield any results. Check for typos and try synonyms. Also
+              make sure, that the network is <b>searchable</b> on NDEx.
+            </p>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- results and details for selected candidate -->
+      <div class="row mt-3" *ngIf="ndexFormState.value.updatingNetworkCandidates.length > 0">
+        <!-- list of candidates -->
+        <div class="col">
+          <div class="list-group">
+            <button
+              *ngFor="let candidate of ndexFormState.value.updatingNetworkCandidates"
+              (click)="networkCandidateEmitter.emit(candidate)"
+              type="button"
+              class="list-group-item list-group-item-action"
+              [disabled]="ndexFormState.value.uploadInProgress"
+              [ngClass]="
+                ndexFormState.value.updatingNetwork?.externalId === candidate.externalId
+                  ? 'active'
+                  : ''
+              "
+            >
+              {{ candidate.name }}
+            </button>
+          </div>
+        </div>
+
+        <!-- details for chosen candidate -->
+        <div class="col-8" *ngIf="ndexFormState.value.updatingNetwork !== null">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ ndexFormState.value.updatingNetwork.name }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                {{ ndexFormState.value.updatingNetwork.owner }}
+              </h6>
+
+              <hr />
+
+              <app-tag
+                [text]="ndexFormState.value.updatingNetwork.externalId"
+                tooltip="Saved to clipboard"
+                icon="copy"
+                colorHighlight="#0d6efd"
+                colorBackground="#ffffff"
+                colorBorder="#d3d3d3"
+                colorText="#000000"
+                [tooltipAfterClick]="true"
+                (clickEmitter)="
+                  copyUuidEmitter.emit(ndexFormState.value.updatingNetwork.externalId)
+                "
+              ></app-tag>
+
+              <p
+                class="card-text"
+                [innerHTML]="ndexFormState.value.updatingNetwork.description"
+              ></p>
+
+              <hr />
+
+              <div class="row">
+                <div class="col">
+                  <div class="d-grid">
+                    <a
+                      role="button"
+                      class="btn btn-outline-primary"
+                      [href]="ndexFormState.value.updatingNetwork.linkNdex"
+                      target="_blank"
+                    >
+                      <fa-icon icon="arrow-up-right-from-square"></fa-icon>&nbsp;Open on NDEx
+                    </a>
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="d-grid">
+                    <button
+                      *ngIf="ndexFormState.value.updatingNetwork.writable === null"
+                      type="button"
+                      class="btn btn-outline-primary"
+                      [disabled]="isUserOnline === false || ndexFormState.value.uploadInProgress"
+                      (click)="checkNetworkRightsEmitter.emit(ndexFormState.value.updatingNetwork)"
+                    >
+                      <fa-icon icon="circle-question"></fa-icon>&nbsp;Check rights for this network
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-danger"
+                      [disabled]="true"
+                      *ngIf="ndexFormState.value.updatingNetwork.writable === false"
+                    >
+                      <fa-icon icon="xmark-circle"></fa-icon>&nbsp;Insufficient rights
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-success"
+                      [disabled]="true"
+                      *ngIf="ndexFormState.value.updatingNetwork.writable === true"
+                    >
+                      <fa-icon icon="check-circle"></fa-icon>&nbsp;Sufficient rights
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <p
+                  *ngIf="
+                    isUserOnline === false && ndexFormState.value.updatingNetwork.writable === null
+                  "
+                >
+                  To check rights for this network, you need to be logged in to NDEx. You can login
+                  to NDEx using the form at the top of the page.
+                </p>
+                <p
+                  *ngIf="
+                    isUserOnline === true && ndexFormState.value.updatingNetwork.writable === true
+                  "
+                >
+                  The rights you have for this network are sufficient for overriding it.
+                </p>
+                <p
+                  *ngIf="
+                    isUserOnline === true && ndexFormState.value.updatingNetwork.writable === false
+                  "
+                >
+                  The rights you have for this network are insufficient for overriding it. It is
+                  possible that the network is set to <b>readonly</b>. Please check with the
+                  network's owner, select another network or create a new network in your account.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="mb-5">
+      <!-- network name -->
+      <label for="networkName" class="form-label">Network name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="networkName"
+        placeholder="Network name"
+        [ngrxFormControlState]="ndexFormState.controls.network.controls.name"
+      />
+
+      <!-- info: override vs. create new -->
+      <div class="mt-3">
+        <h5>Summary</h5>
+
+        <p>
+          <b>Submission mode</b>:
+          <span *ngIf="ndexFormState.value.submissionMode === 0">Override existing</span
+          ><span *ngIf="ndexFormState.value.submissionMode === 1">Create new</span>
+        </p>
+        <p><b>Network name</b>: {{ ndexFormState.value.network?.name }}</p>
+        <p>
+          <span
+            *ngIf="ndexFormState.value.submissionMode === 0 && ndexFormState.value.updatingNetwork"
+            ><b>Overriding</b>:&nbsp;<a
+              [href]="ndexFormState.value.updatingNetwork.linkNdex"
+              target="_blank"
+              >{{ ndexFormState.value.updatingNetwork.externalId }}</a
+            ></span
+          >
+        </p>
+
+        <hr />
+
+        <div class="alert alert-danger" role="alert" *ngIf="isUserOnline === false">
+          <h5 class="alert-heading"><fa-icon icon="link-slash"></fa-icon>&nbsp;Offline</h5>
+          <p>
+            To submit a changed network to NDEx you are required to login to NDEx in the form above.
+            Your credentials and account details are deleted as soon as you logout, close the window
+            or refresh the page.
+          </p>
+        </div>
+
+        <!-- Button to submit form -->
+        <div *ngIf="isUserOnline === true" class="d-grid">
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="submitEmitter.emit()"
+            [disabled]="
+              ndexFormState.value.uploadInProgress ||
+              (ndexFormState.value.submissionMode === 0 &&
+                (ndexFormState.value.updatingNetwork === null ||
+                  ndexFormState.value.updatingNetwork.writable === null ||
+                  !ndexFormState.value.updatingNetwork.writable))
+            "
+          >
+            <span *ngIf="!ndexFormState.value.uploadInProgress">
+              <fa-icon icon="cloud-arrow-up"></fa-icon>&nbsp;Submit
+            </span>
+            <div
+              *ngIf="ndexFormState.value.uploadInProgress"
+              class="spinner-border spinner-border-sm"
+              role="status"
+            >
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-container>

@@ -1,0 +1,87 @@
+<ng-container>
+  <h6>Color nodes</h6>
+
+  <ng-container *ngFor="let property of properties; let propertyId = index">
+    <app-sidebar-layout-form-continuous
+      (propertyClicked)="nodeColorByChanged.emit(property)"
+      *ngIf="property.type === 'continuous'"
+      [gradient]="gradient"
+      [isChecked]="property === nodeColorBy"
+      [maxLabel]="maxLabel"
+      [minLabel]="minLabel"
+      [propertyId]="propertyId"
+      [property]="property"
+      type="color"
+    ></app-sidebar-layout-form-continuous>
+
+    <app-sidebar-layout-form-discrete
+      (propertyClicked)="nodeColorByChanged.emit(property)"
+      *ngIf="property.type === 'discrete'"
+      [isChecked]="property === nodeColorBy"
+      [propertyId]="propertyId"
+      [property]="property"
+    ></app-sidebar-layout-form-discrete>
+
+    <app-sidebar-layout-form-boolean
+      (propertyClicked)="booleanPropertyChanged.emit($event)"
+      *ngIf="property.type === 'boolean'"
+      [booleanProperty]="booleanProperty"
+      [propertyId]="propertyId"
+      [property]="property"
+    ></app-sidebar-layout-form-boolean>
+  </ng-container>
+
+  <hr />
+
+  <!-- TOGGLE: show all nodes -->
+  <div class="form-check form-switch mt-2">
+    <label class="form-check-label" for="showAllNodes">Show all nodes</label>
+    <input
+      (click)="showAllNodesChanged.emit()"
+      [checked]="showAllNodes"
+      class="form-check-input"
+      id="showAllNodes"
+      role="switch"
+      type="checkbox"
+    />
+  </div>
+
+  <!-- TOGGLE: show only shared nodes -->
+  <div *ngIf="patientSelection === 3" class="form-check form-switch mt-2">
+    <label class="form-check-label" for="showOnlyShared">Show only shared nodes</label>
+    <input
+      (click)="showOnlySharedNodesChanged.emit()"
+      [checked]="showOnlySharedNodes"
+      class="form-check-input"
+      id="showOnlyShared"
+      role="switch"
+      type="checkbox"
+    />
+  </div>
+
+  <ng-container *ngIf="patientSelection === 0 || patientSelection === 1 || patientSelection === 2">
+    <hr />
+    <!-- set node size -->
+    <h6>Node size</h6>
+
+    <ng-container *ngFor="let property of properties; let propertyId = index">
+      <app-sidebar-layout-form-continuous
+        (propertyClicked)="nodeSizeByChanged.emit(property)"
+        *ngIf="property.type === 'continuous'"
+        [isChecked]="property === nodeSizeBy"
+        [maxLabel]="maxLabel"
+        [minLabel]="minLabel"
+        [propertyId]="propertyId"
+        [property]="property"
+        type="size"
+      ></app-sidebar-layout-form-continuous>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<!-- FIT -->
+<div class="d-grid mt-2">
+  <button (click)="fitGraphPressed.emit()" class="btn btn-secondary" type="button">
+    Fit graph to viewport
+  </button>
+</div>

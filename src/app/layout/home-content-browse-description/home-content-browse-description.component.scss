@@ -1,0 +1,13 @@
+.network-details img {
+  max-width: 100%;
+}
+
+.ndex {
+  border-color: var(--ndex-color);
+  color: var(--ndex-color);
+}
+
+.ndex:hover {
+  background-color: var(--ndex-color);
+  color: white;
+}

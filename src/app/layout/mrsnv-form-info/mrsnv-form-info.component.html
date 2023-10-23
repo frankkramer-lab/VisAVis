@@ -1,0 +1,45 @@
+<div class="row" *ngIf="mrsnv && candidateInfo && candidateInfoIndex !== null">
+  <div class="col-auto" *ngIf="mrsnv.isEnabled">
+    <button
+      type="button"
+      class="btn btn-sm btn-danger"
+      (click)="removeInfoEmitter.emit(candidateInfo.property)"
+    >
+      <fa-icon icon="trash"></fa-icon>
+    </button>
+  </div>
+  <div class="col">
+    <input
+      type="text"
+      [readOnly]="true"
+      class="form-control"
+      [ngClass]="mrsnv.controls.networkAttributes.isInvalid ? 'ngrx-forms-invalid' : ''"
+      [ngrxFormControlState]="
+        mrsnv.controls.networkAttributes.controls.info.controls[candidateInfoIndex].controls
+          .property
+      "
+    />
+  </div>
+  <div
+    class="col"
+    *ngIf="
+      mrsnv.controls.networkAttributes.controls.info.controls[candidateInfoIndex].controls
+        .filter !== undefined
+    "
+  >
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="infoFilterable-{{ candidateInfoIndex }}"
+        [ngrxFormControlState]="
+          mrsnv.controls.networkAttributes.controls.info.controls[candidateInfoIndex].controls
+            .filter
+        "
+      />
+      <label class="form-check-label" for="infoFilterable-{{ candidateInfoIndex }}"
+        >Filterable</label
+      >
+    </div>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<div class="row mb-2">
+  <div class="col">
+    <b>{{ name }}</b>
+  </div>
+  <div class="col-auto">
+    <div [attr.aria-label]="'Visibility mode for {{ name }}'" class="btn-group" role="group">
+      <input
+        (click)="modelEmitter.emit(2)"
+        [checked]="model === 2"
+        [disabled]="parentVisibility === 2 && name !== 'Sidebar'"
+        class="btn-check"
+        id="visibilityNone{{ name }}"
+        name="visibilityMode{{ name }}"
+        type="radio"
+      />
+      <label class="btn btn-outline-info" for="visibilityNone{{ name }}"> None </label>
+
+      <input
+        (click)="modelEmitter.emit(1)"
+        [checked]="model === 1"
+        [disabled]="parentVisibility === 2 && name !== 'Sidebar'"
+        class="btn-check"
+        id="visibilityButton{{ name }}"
+        name="visibilityMode{{ name }}"
+        type="radio"
+      />
+      <label class="btn btn-outline-info" for="visibilityButton{{ name }}"> Button </label>
+
+      <input
+        (click)="modelEmitter.emit(0)"
+        [checked]="model === 0"
+        [disabled]="parentVisibility === 2 && name !== 'Sidebar'"
+        class="btn-check"
+        id="visibilityFull{{ name }}"
+        name="visibilityMode{{ name }}"
+        type="radio"
+      />
+      <label class="btn btn-outline-info" for="visibilityFull{{ name }}"> Full </label>
+    </div>
+  </div>
+  <div class="col-auto pl-3">
+    <fa-icon
+      [ngbTooltip]="tooltipContent"
+      [openDelay]="1000"
+      class="text-secondary"
+      container="body"
+      icon="info-circle"
+      placement="bottom"
+      size="2x"
+    ></fa-icon>
+  </div>
+</div>
+
+<ng-template #tooltipContent>
+  <div [innerHTML]="tooltip" class="text-start"></div>
+</ng-template>

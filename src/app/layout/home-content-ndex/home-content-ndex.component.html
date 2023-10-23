@@ -1,0 +1,112 @@
+<ng-container *ngIf="formAuth">
+  <form [ngrxFormState]="formAuth">
+    <!-- STATE -->
+    <div *ngIf="formAuth.value.isOnline === false">
+      <ngb-alert [dismissible]="false" type="danger">
+        <h5><fa-icon icon="link-slash"></fa-icon>&nbsp;You are <b>offline</b>!</h5>
+        <p>Right now, you're not connected to NDEx.</p>
+      </ngb-alert>
+    </div>
+
+    <div *ngIf="formAuth.value.isOnline === true">
+      <ngb-alert [dismissible]="false" type="success">
+        <h5><fa-icon icon="link"></fa-icon>&nbsp;You are <b>online</b>!</h5>
+        <p>
+          You successfully connected to NDEx. To logout, just click the button below. Don't worry if
+          you ever forget to logout, we discard your login data, when you close the browser at the
+          latest.
+        </p>
+      </ngb-alert>
+    </div>
+
+    <ng-container
+      *ngIf="formAuth.value.isOnline === true; then online; else offline"
+    ></ng-container>
+
+    <!-- Submit -->
+    <div class="row">
+      <div class="col-md-12 justify-content-md-end">
+        <div class="d-grid gap-2">
+          <button
+            (click)="loginEmitter.emit()"
+            *ngIf="formAuth.controls.isOnline.value === false"
+            [disabled]="formAuth.value.login.authInProgress === true"
+            class="btn btn-outline-success"
+            type="button"
+          >
+            <span
+              *ngIf="formAuth.value.login.authInProgress === true"
+              aria-hidden="true"
+              class="spinner-border spinner-border-sm"
+              role="status"
+            ></span>
+            Login
+          </button>
+          <button
+            (click)="logoutEmitter.emit()"
+            *ngIf="formAuth.controls.isOnline.value === true"
+            [disabled]="formAuth.value.login.authInProgress === true"
+            class="btn btn-outline-danger"
+            type="button"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-container>
+
+<ng-template #online>
+  <p>
+    You successfully connected to NDEx. To logout, just click the button below. Don't worry if you
+    ever forget to logout, we discard your login data, when you close the browser at the latest.
+  </p>
+</ng-template>
+
+<ng-template #offline>
+  <ng-container *ngIf="formAuth">
+    <!-- Username -->
+    <div class="row mb-3">
+      <label class="col-md-2 col-form-label" for="ndexUsername">Username</label>
+      <div class="col-md-10">
+        <input
+          [ngrxFormControlState]="formAuth.controls.login.controls.username"
+          [readOnly]="formAuth.value.login.authInProgress === true"
+          class="form-control"
+          id="ndexUsername"
+          type="text"
+        />
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div class="row mb-3">
+      <label class="col-md-2 col-form-label" for="ndexPassword">Password</label>
+      <div class="col-md-10">
+        <input
+          [ngrxFormControlState]="formAuth.controls.login.controls.password"
+          [readOnly]="formAuth.value.login.authInProgress === true"
+          class="form-control"
+          id="ndexPassword"
+          type="password"
+        />
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<h4 class="mt-4">Why connect to NDEx?</h4>
+
+<p>
+  Our application accesses networks from NDEx, the online commons for biological and medical network
+  data. If you have a publicly available network that is compatible to our data structure, you don't
+  need to login. However, if you have a network that conforms to the
+  <span (click)="showModal.emit()" class="link-primary cursor text-decoration-underline">
+    general structure</span
+  >, but is simply lacking the required <code>VisAVis</code> aspect, we can help you out!
+</p>
+<p>
+  We will create a copy of the network and allow you to define the <code>VisAVis</code>
+  aspect from here. To store this new network, we need you to login to your NDEx account.
+</p>

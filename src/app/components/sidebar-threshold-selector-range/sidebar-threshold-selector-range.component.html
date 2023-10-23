@@ -1,0 +1,60 @@
+<div class="input-group mb-3">
+  <span class="input-group-text" id="thresholdLabel">
+    {{ threshold?.property?.label ?? threshold?.property?.name }}
+  </span>
+  <input
+    [disabled]="true"
+    [ngModel]="threshold?.definedMin ?? 0 | norm: 2"
+    aria-label="Lower threshold bound"
+    class="form-control"
+    type="text"
+  />
+  <span class="input-group-text" id="thresholdSeparator">&nbsp;:&nbsp;</span>
+  <input
+    [disabled]="true"
+    [ngModel]="threshold?.definedMax ?? 1 | norm: 2"
+    aria-label="Upper threshold bound"
+    class="form-control"
+    type="text"
+  />
+</div>
+
+<div
+  *ngIf="
+    threshold !== null &&
+    threshold.definedMin !== null &&
+    threshold.definedMax !== null &&
+    max !== null &&
+    min !== null
+  "
+  class="row d-flex align-items-end"
+>
+  <div class="col-auto">
+    <!-- reset left -->
+    <button (click)="resetLowerBoundEmitter.emit(threshold)" class="btn btn-sm btn-dark">
+      <fa-icon icon="redo"></fa-icon>
+    </button>
+  </div>
+  <div class="col">
+    <!-- range -->
+    <ngx-slider
+      (userChangeEnd)="valueChanged($event)"
+      [highValue]="threshold.definedMax"
+      [options]="{
+        floor: min,
+        ceil: max,
+        step: threshold.property.thresholdStep ?? 1,
+        keyboardSupport: false,
+        getSelectionBarColor: sliderColor,
+        getPointerColor: pointerColor
+      }"
+      [value]="threshold.definedMin"
+    ></ngx-slider>
+  </div>
+  <div class="col-auto">
+    <!-- reset right -->
+    <button (click)="resetUpperBoundEmitter.emit(threshold)" class="btn btn-sm btn-dark">
+      <fa-icon icon="redo"></fa-icon>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<!-- Select to add new properties -->
+<ng-container *ngIf="candidateProperties && candidateProperties.length > 0">
+  <div class="row">
+    <!-- Scrollable list left -->
+    <div class="col">
+      <select
+        class="form-select mb-3"
+        [size]="candidateProperties.length > 10 ? 10 : (candidateProperties.length === 1 ? 2 : candidateProperties.length)"
+        aria-label="Select property for configuration"
+      >
+        <option
+          *ngFor="let candidate of candidateProperties"
+          [value]="candidate"
+          [selected]="candidate === candidateSelection"
+          (click)="candidateSelectedEmitter.emit(candidate)"
+        >
+          {{ candidate.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Optional details right -->
+    <div *ngIf="candidateSelection" class="col-6">
+      <!-- TABLE -->
+      <table class="table table-bordered">
+        <tr>
+          <td><b>Property name</b></td>
+          <td>{{ candidateSelection.name }}</td>
+        </tr>
+        <tr>
+          <td><b>Data type</b></td>
+          <td>{{ candidateSelection.datatype }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <ng-container *ngIf="candidateSelection">
+    <!-- DISTRIBUTION -->
+    <div
+      class="row"
+      *ngIf="
+        candidateSelection &&
+        candidateSelection.distribution &&
+        (candidateSelection.distribution.continuous || candidateSelection.distribution.discrete)
+      "
+    >
+      <div class="col" *ngIf="candidateSelection.distribution.discrete">
+        <app-chart-bar
+          [chartData]="candidateSelection.distribution.discrete.total"
+          [propertyName]="candidateSelection.name"
+          [isContinuous]="false"
+        ></app-chart-bar>
+      </div>
+
+      <div class="col" *ngIf="candidateSelection.distribution.continuous">
+        <app-chart-bar
+          [chartData]="candidateSelection.distribution.continuous.total"
+          [propertyName]="candidateSelection.name"
+          [isContinuous]="true"
+        ></app-chart-bar>
+      </div>
+    </div>
+
+    <!-- BUTTON -->
+    <div class="d-grid mt-2 mb-3">
+      <button
+        class="btn btn-primary"
+        type="button"
+        (click)="addPropertyEmitter.emit()"
+      >
+        <fa-icon icon="plus"></fa-icon>&nbsp;Create a mapping for this property
+      </button>
+    </div>
+  </ng-container>
+</ng-container>

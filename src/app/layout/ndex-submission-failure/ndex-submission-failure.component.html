@@ -1,0 +1,21 @@
+<div class="container-fluid p-5 mb-5">
+
+  <app-home-headline></app-home-headline>
+
+  <div class="alert alert-danger mb-3" role="alert">
+    <h5 class="display-5">Upload failed!</h5>
+    <p>The network you submitted could not be uploaded to your NDEx account.</p>
+  </div>
+
+  <div class="d-grid gap-2">
+    <button class="btn btn-outline-success" type="button" (click)="downloadCxFile()">
+      Download CX file
+    </button>
+    <button class="col btn btn-outline-primary" type="button"
+            (click)="navigateHome()">Return home
+    </button>
+  </div>
+
+</div>
+
+<app-home-footer></app-home-footer>

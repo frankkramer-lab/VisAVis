@@ -1,0 +1,22 @@
+<div class="row" *ngIf="autoSize">
+  <div class="card-body p-0" style="height: 0px; overflow: hidden">
+    <div class="ms-3 p-2 d-inline" *ngIf="label !== undefined" >{{label}}</div>
+    <div class="p-3 d-inline">00000000-0000-0000-0000-000000000000</div>
+    <span class="p-2 me-3">
+          <fa-icon [icon]="icon"></fa-icon>
+    </span>
+  </div>
+</div>
+<div class="input-group mb-3 w-auto tag"
+     (click)="clickEmitter.emit()"
+     [autoClose]="tooltipAfterClick ? 'outside' : true"
+     [ngbTooltip]="tooltip"
+     [triggers]="tooltipAfterClick ? 'click:blur' : 'hover focus'"
+>
+  <span *ngIf="label !== undefined" class="input-group-text" id="basic-addon1">{{label}}</span>
+  <div class="tag-icon py-1 px-3">
+    <fa-icon [icon]="icon"></fa-icon>
+  </div>
+  <input type="text" class="form-control" aria-describedby="basic-addon1" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" value="{{text}}" disabled readonly>
+
+</div>

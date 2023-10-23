@@ -1,0 +1,50 @@
+//:root {
+//  --tag-color-highlight: #0d6efd;
+//  --tag-color-background: #fff;
+//  --tag-color-text: #000;
+//  --tag-color-border: #D3D3D3;
+//}
+//
+//.tag {
+//  padding: 10px;
+//  border-radius: 6px;
+//  border: 1px solid;
+//  border-color: var(--tag-color-border);
+//  background-color: var(--tag-color-background);
+//  color: var(--tag-color-text);
+//  cursor: pointer;
+//  white-space: nowrap;
+//}
+//
+//.tag:hover {
+//  border-color: var(--tag-color-highlight);
+//
+//  > .tag-icon {
+//    visibility: initial;
+//  }
+//}
+//
+//.tag-icon {
+//  visibility: hidden;
+//  color: var(--tag-color-highlight);
+//}
+
+.tag:hover {
+  border-color: var(--tag-color-highlight);
+
+  > .tag-icon {
+    visibility: initial;
+  }
+}
+
+.tag-icon {
+  visibility: hidden;
+  color: var(--tag-color-highlight);
+  position: absolute;
+  right: 0px;
+  z-index: 1;
+  height: 100%;
+  > fa-icon {
+    vertical-align: middle;
+  }
+}

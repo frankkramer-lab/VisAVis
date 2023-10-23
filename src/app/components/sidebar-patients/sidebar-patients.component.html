@@ -1,0 +1,60 @@
+<h5>{{ labelGroups }}</h5>
+
+<!-- Type to search for subnetwork in either list -->
+<div class="input-group">
+  <input
+    #filterByTerm
+    (input)="filterSubnetworksByTerm(filterByTerm.value)"
+    aria-label="Filter subnetworks"
+    class="form-control"
+    id="filterTerm"
+    placeholder="Filter..."
+    type="text"
+  />
+  <button
+    (click)="filterByTerm.value = ''; filterSubnetworksByTerm('')"
+    *ngIf="filterByTerm.value.length > 0"
+    class="btn btn-dark"
+    id="clearSearch"
+    type="button"
+  >
+    <fa-icon icon="times"></fa-icon>
+  </button>
+
+  <button
+    class="btn btn-dark dropdown-toggle"
+    type="button"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+  >
+    {{filterByProperty ? filterByProperty.label : 'Select a property'}}
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li *ngFor="let property of filterableProperties">
+      <a class="dropdown-item cursor" (click)="setFilterProperty(null)">Reset</a>
+      <a class="dropdown-item cursor" (click)="setFilterProperty(property)">{{property.label}}</a>
+    </li>
+  </ul>
+</div>
+
+<div class="row mt-2">
+  <div class="col-6">
+    <app-sidebar-patients-select
+      [subnetworkList]="patientsGroupA$ | async"
+      [groupLabel]="groupLabelA$ | async"
+      [selectedSubnetwork]="patientA$ | async"
+      [filterByProperty]="filterByProperty"
+      (subnetworkSelectionChangedEmitter)="patientChanged('A', $event)"
+    ></app-sidebar-patients-select>
+  </div>
+  <div class="col-6">
+    <app-sidebar-patients-select
+      [subnetworkList]="patientsGroupB$ | async"
+      [groupLabel]="groupLabelB$ | async"
+      [selectedSubnetwork]="patientB$ | async"
+      [filterByProperty]="filterByProperty"
+      (subnetworkSelectionChangedEmitter)="patientChanged('B', $event)"
+    ></app-sidebar-patients-select>
+  </div>
+
+</div>
