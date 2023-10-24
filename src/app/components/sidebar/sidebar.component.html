@@ -2,8 +2,8 @@
 <div *ngIf="sidebarVisible === 0" class="dark-mode full-height scroll-style d-flex flex-column pb-2">
   <!-- headline -->
   <h3 class="m-2">
-    <div class="row">
-      <div *ngIf="sidebarBackButtonVisible" class="col-auto">
+    <div class="row align-items-center">
+      <div *ngIf="sidebarBackButtonVisible" class="col-auto ">
         <fa-icon
           (click)="returnHome()"
           [openDelay]="1000"
@@ -14,7 +14,7 @@
           placement="right"
         ></fa-icon>
       </div>
-      <div class="col"><img src="assets/VisAVis-logo-white-with-text.png" alt="VisAVis" height="50"></div>
+      <div class="col"><a href="home"><img src="assets/VisAVis-logo-white-with-text.png" alt="VisAVis" height="50"></a></div>
       <div class="col-auto">
         <fa-icon
           (click)="toggleSidebar(1)"
