@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { ComponentVisibilityEnum } from '../../core/enum/component-visibility.enum';
-import { AppState } from '../../data/state/app.state';
+import { ComponentVisibilityEnum } from '../../data/enum/component-visibility.enum';
+import { AppState } from '../../states/app.state';
 import {
   selectSidebarBackButtonVisibility,
   selectSidebarVisibility,
@@ -14,20 +14,20 @@ import {
   selectSidebarVisibilityNodes,
   selectSidebarVisibilityPatients,
   selectSidebarVisibilityThreshold,
-} from '../../data/state/sidebar/sidebar.selectors';
-import { selectHeadline } from '../../data/state/network/network.selectors';
-import { initializeCore } from '../../data/state/network/network.actions';
-import { selectIsOnline } from '../../data/state/auth/auth.selectors';
+} from '../../states/sidebar/sidebar.selectors';
+import { selectHeadline } from '../../states/network/network.selectors';
+import { initializeCore } from '../../states/network/network.actions';
+import { selectIsOnline } from '../../states/auth/auth.selectors';
 import {
   selectFilterableProperties,
   selectLabelGroups,
   selectLabelsInfos,
   selectLabelSubnetworks,
   selectLabelSubtypes,
-} from '../../data/state/mrsnv/mrsnv.selectors';
+} from '../../states/aspect/aspect.selectors';
 import { Property } from '../../data/schema/property';
 import { MrsnvProperty } from '../../data/schema/mrsnv-property';
-import { selectFilterByProperty } from '../../data/state/patient/patient.selectors';
+import { selectFilterByProperty } from '../../states/patient/patient.selectors';
 
 @Component({
   selector: 'app-network',

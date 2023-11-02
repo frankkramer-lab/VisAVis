@@ -1,0 +1,81 @@
+<h5>Basics</h5>
+
+<p>
+  The network needs to conform to the
+  <a href="https://home.ndexbio.org/data-model/" target="_blank">CX data model</a> and contain the
+  aspects <b>nodes</b>, <b>edges</b>, <b>nodeAttributes</b>, <b>networkAttributes</b>,
+  <b>visAVis</b>.
+</p>
+
+<h5>Nodes</h5>
+
+<p>Each node has to have an id (property <b>@id</b>) and a name (property <b>n</b>).</p>
+
+<h5>Edges</h5>
+
+<p>
+  Each edge has to have an id (property <b>@id</b>), a source (property <b>s</b>) and a target
+  (property <b>t</b>).
+</p>
+
+<h5>NodeAttributes</h5>
+
+<p>
+  Each node can have multiple attributes. A node attribute's relation to a node is indicated by
+  the node attribute's property <b>po</b>. The name of the node attribute (property <b>n</b>)
+  always starts with a patient identifier, followed by <b>_</b>. After that the attribute is
+  described.
+</p>
+
+<h5>metaRelSubNetVis</h5>
+
+<ul>
+  <li><b>highlight</b>: Color of highlighted nodes</li>
+  <li><b>properties</b>: Network specific property definitions</li>
+  <li>
+    <b>individual_properties</b>: Properties present for every sample (i.e. the properties are
+    composed of <code>sample-id_property</code>, e.g. <code>GSM150976_Score</code>)
+  </li>
+</ul>
+
+<p>The properties contain the following information:</p>
+
+<ul>
+  <li><b>property</b>: Name of the property (e.g. Score)</li>
+  <li><b>label</b>: Label used in the app to display the property</li>
+  <li>
+    <b>type</b>: Mapping/data type (one of <code>continuous</code>, <code>discrete</code> and
+    <code>boolean</code>)
+  </li>
+  <li>
+    <b>threshold</b>: Nodes can be selected by adjusting the threshold (only possible for
+    continuous properties)
+  </li>
+  <li>
+    <b>mapping</b>: Key-value-pairs defining the thresholds or values and corresponding colors
+  </li>
+</ul>
+
+<p>The mapping types result in different mapping behaviors:</p>
+
+<ul>
+  <li>
+    <b>Continuous</b>: The color is mapped to a gradient with the colors corresponding to the
+    thresholds; this property is also used for mapping the node size
+  </li>
+  <li>
+    <b>Discrete</b>: Only values defined in the mapping are mapped to the corresponding color
+  </li>
+  <li><b>Boolean</b>: The matching nodes get a border in the defined color</li>
+</ul>
+
+<h5>R implementation</h5>
+
+Supplementary information about implementing this data format as extension to the Bioconductor
+package
+<a href="https://bioconductor.org/packages/release/bioc/html/RCX.html" target="_blank">RCX</a> can
+be found in the
+<a href="https://github.com/frankkramer-lab/RCX-VisAVis" target="_blank"
+>RCX-VisAVis GitHub repository</a> or through the <a href="https://frankkramer-lab.github.io/RCX-Extension-Hub/" target="_blank"
+>RCX Extension Hub</a>
+.

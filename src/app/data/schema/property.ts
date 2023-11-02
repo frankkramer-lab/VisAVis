@@ -1,4 +1,4 @@
-import { PropertyTypeEnum } from '../../core/enum/property-type-enum';
+import { PropertyTypeEnum } from '../enum/property-type-enum';
 import { PropertyMapping } from './property-mapping';
 
 export interface Property {

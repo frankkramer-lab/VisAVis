@@ -1,0 +1,158 @@
+<div class="container-fluid p-0 mb-4">
+  <!-- headline -->
+  <!--  <app-home-headline></app-home-headline>-->
+
+  <!-- Three tabs -->
+  <ul
+    #nav="ngbNav"
+    [activeId]="4"
+    class="nav-tabs bg-light text-light align-items-end"
+    ngbNav
+  >
+    <!-- Logo -->
+    <li class="nav-item bg-light ">
+      <a class="nav-link disabled pb-0 me-4" href="#" tabindex="-1" aria-disabled="true">
+        <h1><img src="assets/VisAVis-logo-with-text.png" alt="VisAVis" height="60"></h1>
+      </a>
+    </li>
+
+
+    <!-- Tab 1: Info -->
+    <li [ngbNavItem]="1" [disabled]="true" class="disabled">
+      <a ngbNavLink>
+        <h5 class="my-1">
+          <fa-icon icon="info-circle"></fa-icon>&nbsp; General info
+        </h5>
+      </a>
+      <ng-template ngbNavContent>
+        Disabled!!!
+      </ng-template>
+    </li>
+
+    <!-- Tab 2: Networks -->
+    <li [ngbNavItem]="2" [disabled]="true" class="disabled">
+      <a ngbNavLink>
+        <h5 class="my-1">
+          <fa-icon icon="circle-nodes"></fa-icon>&nbsp; Browse networks
+        </h5>
+      </a>
+      <ng-template ngbNavContent>
+        Disabled!!!
+      </ng-template>
+    </li>
+
+    <!-- Tab 3: Login -->
+    <li [ngbNavItem]="3">
+      <a ngbNavLink class="justify-content-end">
+        <h5 class="my-1">
+          <ng-container *ngIf="loginForm$ | async as authState">
+            <form [ngrxFormState]="authState" style="display: inline-block;" class="position-relative">
+              <fa-icon icon="user-circle"></fa-icon>&nbsp;
+              <!-- STATE -->
+              <span  *ngIf="authState.value.isOnline === false" class="ndex-login-status position-absolute translate-middle p-1 bg-danger border border-light rounded-circle">
+                <span class="visually-hidden">Logged out</span>
+              </span>
+              <span  *ngIf="authState.value.isOnline === true" class="ndex-login-status position-absolute translate-middle p-1 bg-success border border-light rounded-circle">
+                <span class="visually-hidden">Logged in</span>
+              </span>
+            </form>
+          </ng-container>
+          NDEx login
+        </h5>
+      </a>
+      <ng-template ngbNavContent>
+        <div class="p-2">
+          <app-home-content-ndex
+            [formAuth]="loginForm$ | async"
+            (loginEmitter)="login()"
+            (logoutEmitter)="logout()"
+            (showModal)="showModal()"
+          ></app-home-content-ndex>
+        </div>
+      </ng-template>
+    </li>
+
+    <li [ngbNavItem]="4">
+      <a ngbNavLink>
+        <h5 class="my-1">
+          <fa-icon icon="circle-nodes"></fa-icon>&nbsp; Edit Visualization
+        </h5>
+      </a>
+      <ng-template ngbNavContent>
+        <app-collapsible
+          headline="Connection to NDEx"
+          [content]="contentLogin"
+          iconSize="2x"
+          [hidden]="true"
+        ></app-collapsible>
+        <app-collapsible
+          headline="Edit your network"
+          [content]="contentForm"
+          iconSize="2x"
+        ></app-collapsible>
+
+        <ng-template #contentForm>
+          <div class="d-grid">
+            <button class="btn btn-outline-danger" type="button" (click)="abortAndReturn()">
+              <fa-icon icon="home"></fa-icon>&nbsp;Abort and return
+            </button>
+          </div>
+
+          <div class="p-4 mb-5">
+            <app-vis-aspect-edit
+              [isUserOnline]="isUserOnline$ | async"
+              [ndex]="ndexForm$ | async"
+              [mrsnv]="mrsnvForm$ | async"
+              [candidatesSubnetworks]="candidatesSubnetworks$ | async"
+              [candidatesGroups]="candidatesGroups$ | async"
+              [candidatesInfos]="candidatesInfos$ | async"
+              [candidatesPropertiesGeneral]="candidatesPropertiesGeneral$ | async"
+              [candidatesPropertiesIndividual]="candidatesPropertiesIndividual$ | async"
+              [candidateGeneral]="candidateGeneral$ | async"
+              [candidateIndividual]="candidateIndividual$ | async"
+              (addInfoEmitter)="addInfo($event)"
+              (removeInfoEmitter)="removeInfo($event)"
+              (setDefaultSeparatorEmitter)="setDefaultSeparator()"
+              (setCustomSeparator)="setCustomSeparator()"
+              (enableSeparator)="enableSeparatorInput()"
+              (submitSeparator)="submitSeparator()"
+              (resetSeparator)="resetSeparator()"
+              (selectCandidateGeneral)="selectCandidateGeneral($event)"
+              (selectCandidateIndividual)="selectCandidateIndividual($event)"
+              (addPropertyGeneral)="addPropertyGeneral()"
+              (addPropertyIndividual)="addPropertyIndividual()"
+              (addGeneralMappingStepEmitter)="addMappingStepGeneral($event)"
+              (addIndividualMappingStepEmitter)="addMappingStepIndividual($event)"
+              (removeGeneralMappingStepEmitter)="removeMappingStepGeneral($event)"
+              (removeIndividualMappingStepEmitter)="removeMappingStepIndividual($event)"
+              (showIndividualPropertyDetailsEmitter)="showIndividualPropertyDetails($event)"
+              (showGeneralPropertyDetailsEmitter)="showGeneralPropertyDetails($event)"
+              (removeGeneralPropertyEmitter)="removeGeneralProperty($event)"
+              (removeIndividualPropertyEmitter)="removeIndividualProperty($event)"
+              (ndexSearchEmitter)="searchNdex($event)"
+              (networkSelectedEmitter)="setNetworkUpdateCandidate($event)"
+              (checkNetworkRightsEmitter)="checkNetworkRights($event)"
+              (copyUuidEmitter)="copyUuid($event)"
+              (submitToNdexEmitter)="submitToNdex()"
+            ></app-vis-aspect-edit>
+          </div>
+        </ng-template>
+        <ng-template #contentLogin>
+          <div class="p-4 mb-5">
+            <app-home-content-ndex
+              [formAuth]="loginForm$ | async"
+              (loginEmitter)="login()"
+              (logoutEmitter)="logout()"
+              (showModal)="showModal()"
+            ></app-home-content-ndex>
+          </div>
+        </ng-template>
+      </ng-template>
+    </li>
+  </ul>
+
+  <div [ngbNavOutlet]="nav" class="container-fluid mt-2"></div>
+</div>
+
+<!-- footer -->
+<app-home-footer></app-home-footer>

@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "gh": "ng build --output-path docs --base-href /MetaRelSubNetVis/; cp docs/index.html docs/404.html",
+    "gh": "ng build --output-path docs --base-href /VisAVis/; cp docs/index.html docs/404.html",
     "start": "ng serve",
     "build": "ng build",
-    "postbuild": "cp docs/index.html docs/404.html",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"

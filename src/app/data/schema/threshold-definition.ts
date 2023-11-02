@@ -1,5 +1,5 @@
 import { Property } from './property';
-import { PropertyScopeEnum } from '../../core/enum/property-scope.enum';
+import { PropertyScopeEnum } from '../enum/property-scope.enum';
 
 export interface ThresholdDefinition {
   definedMin: number;

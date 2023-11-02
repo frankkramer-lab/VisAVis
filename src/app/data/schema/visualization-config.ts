@@ -1,4 +1,4 @@
-import { ComponentVisibilityEnum } from '../../core/enum/component-visibility.enum';
+import { ComponentVisibilityEnum } from '../enum/component-visibility.enum';
 import { ImageDownloadConfig } from './image-download-config';
 import { ThresholdBounds } from './threshold-bounds';
 

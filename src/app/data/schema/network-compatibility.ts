@@ -1,4 +1,4 @@
-import { NetworkIncompatibilityReasonEnum } from '../../core/enum/network-incompatibility-reason.enum';
+import { NetworkIncompatibilityReasonEnum } from '../enum/network-incompatibility-reason.enum';
 
 export interface NetworkCompatibility {
   isCompatible: boolean;

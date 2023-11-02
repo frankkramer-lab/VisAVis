@@ -1,17 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './layout/home/home.component';
+import { HomeComponent } from './layout/home/home/home.component';
 import { NetworkComponent } from './layout/network/network.component';
-import { NetworkGuard } from './core/guard/network.guard';
-import { LinkComponent } from './layout/link/link.component';
-import { MrsnvComponent } from './layout/mrsnv/mrsnv.component';
-import { MrsnvGuard } from './core/guard/mrsnv.guard';
-import {
-  NdexSubmissionSuccessComponent,
-} from './layout/ndex-submission-success/ndex-submission-success.component';
-import {
-  NdexSubmissionFailureComponent,
-} from './layout/ndex-submission-failure/ndex-submission-failure.component';
+import { NetworkGuard } from './guards/network.guard';
+import { LinkComponent } from './layout/link/link/link.component';
+import { MrsnvGuard } from './guards/mrsnv.guard';
+import { NdexSubmissionSuccessComponent } from './layout/ndex/ndex-submission-success/ndex-submission-success.component';
+import { NdexSubmissionFailureComponent } from './layout/ndex/ndex-submission-failure/ndex-submission-failure.component';
+import { VisAspectComponent } from './layout/vis-aspect/vis-aspect.component';
 
 const routes: Routes = [
   {
@@ -31,8 +27,8 @@ const routes: Routes = [
     component: NdexSubmissionFailureComponent,
   },
   {
-    path: 'mrsnv',
-    component: MrsnvComponent,
+    path: 'edit',
+    component: VisAspectComponent,
     canActivate: [MrsnvGuard],
     canDeactivate: [MrsnvGuard],
   },
@@ -48,5 +44,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

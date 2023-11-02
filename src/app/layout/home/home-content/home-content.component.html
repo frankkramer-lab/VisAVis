@@ -1,0 +1,103 @@
+<div class="container-fluid p-0 mb-4">
+  <!-- headline -->
+<!--  <app-home-headline></app-home-headline>-->
+
+  <!-- Three tabs -->
+  <ul
+    #nav="ngbNav"
+    (activeIdChange)="activeNavChanged.emit($event)"
+    [activeId]="activeNav"
+    class="nav-tabs bg-light text-light align-items-end"
+    ngbNav
+  >
+    <!-- Logo -->
+    <li class="nav-item bg-light ">
+      <a class="nav-link disabled pb-0 me-4" href="#" tabindex="-1" aria-disabled="true">
+        <h1><img src="../../../../assets/VisAVis-logo-with-text.png" alt="VisAVis" height="60"></h1>
+      </a>
+    </li>
+
+
+    <!-- Tab 1: Info -->
+    <li [ngbNavItem]="1">
+      <a ngbNavLink>
+        <h5 class="my-1">
+          <fa-icon icon="info-circle"></fa-icon>&nbsp; General info
+        </h5>
+      </a>
+      <ng-template ngbNavContent>
+        <div class="p-2">
+          <app-home-content-info
+            (showModal)="showModal.emit()"
+          ></app-home-content-info>
+        </div>
+      </ng-template>
+    </li>
+
+    <!-- Tab 2: Networks -->
+    <li [ngbNavItem]="2">
+      <a ngbNavLink>
+        <h5 class="my-1">
+        <fa-icon icon="circle-nodes"></fa-icon>&nbsp; Browse networks
+        </h5>
+      </a>
+      <ng-template ngbNavContent>
+        <div class="p-2">
+          <app-home-content-browse
+            (editMrsnv)="editMrsnv.emit()"
+            (copyUuidEmitter)="copyUuidEmitter.emit($event)"
+            (loadNetwork)="loadNetwork.emit($event)"
+            (networkDetailsEmitter)="networkDetailsEmitter.emit($event)"
+            (searchNdex)="searchNdex.emit($event)"
+            (showModal)="showModal.emit()"
+            [isCheckingCompatibility]="isCheckingCompatibility"
+            [isLoading]="isLoading"
+            [lastResultWasEmpty]="lastResultWasEmpty"
+            [lastTermWasEmpty]="lastTermWasEmpty"
+            [mrsnvForm]="mrsnvForm"
+            [networks]="networks"
+            [sampleNetworks]="sampleNetworks"
+            [selectedNetwork]="selectedNetwork"
+            [setupInProgress]="setupInProgress"
+          ></app-home-content-browse>
+        </div>
+      </ng-template>
+    </li>
+
+    <!-- Tab 3: Login -->
+    <li [ngbNavItem]="3">
+      <a ngbNavLink class="justify-content-end">
+        <h5 class="my-1">
+        <ng-container *ngIf="authState">
+          <form [ngrxFormState]="authState" style="display: inline-block;" class="position-relative">
+            <fa-icon icon="user-circle"></fa-icon>&nbsp;
+            <!-- STATE -->
+            <span  *ngIf="authState.value.isOnline === false" class="ndex-login-status position-absolute translate-middle p-1 bg-danger border border-light rounded-circle">
+              <span class="visually-hidden">Logged out</span>
+            </span>
+            <span  *ngIf="authState.value.isOnline === true" class="ndex-login-status position-absolute translate-middle p-1 bg-success border border-light rounded-circle">
+              <span class="visually-hidden">Logged in</span>
+            </span>
+          </form>
+        </ng-container>
+        NDEx login
+        </h5>
+      </a>
+      <ng-template ngbNavContent>
+        <div class="p-2">
+          <app-home-content-ndex
+            (loginEmitter)="loginEmitter.emit()"
+            (logoutEmitter)="logoutEmitter.emit()"
+            (showModal)="showModal.emit()"
+            [formAuth]="authState"
+          ></app-home-content-ndex>
+        </div>
+      </ng-template>
+    </li>
+  </ul>
+
+  <div [ngbNavOutlet]="nav" class="container-fluid mt-2"></div>
+</div>
+
+<!-- footer -->
+<app-home-footer></app-home-footer>

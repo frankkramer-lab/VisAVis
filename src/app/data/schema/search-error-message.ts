@@ -1,4 +1,4 @@
-import { SearchErrorTypeEnum } from '../../core/enum/search-error-type.enum';
+import { SearchErrorTypeEnum } from '../enum/search-error-type.enum';
 
 export interface SearchErrorMessage {
   message: string;
