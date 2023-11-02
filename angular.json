@@ -64,8 +64,8 @@
                   "with": "src/environments/environment.prod.ts"
                 },
                 {
-                  "replace": "src/app/build-specifics/index.ts",
-                  "with": "src/app/build-specifics/index.prod.ts"
+                  "replace": "src/build-specifics/index.ts",
+                  "with": "src/build-specifics/index.prod.ts"
                 }
               ],
               "outputHashing": "all"
@@ -109,6 +109,11 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
+              "src/apple-touch-icon.png",
+              "src/favicon-32x32.png",
+              "src/favicon-16x16.png",
+              "src/site.webmanifest",
+              "src/safari-pinned-tab.svg",
               "src/assets"
             ],
             "styles": [
